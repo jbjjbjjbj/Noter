@@ -3,6 +3,9 @@
 echo '# Julian Noter'
 echo
 
+echo 'Or just use your [browser build in file explorer](.)'
+echo
+
 cat << EOF
 <input type="text" id="search" onkeyup="filter(event)" placeholder="Search">
 
