@@ -1,0 +1,14 @@
+
+
+log(log(x^4)) = log(log(x)) 
+
+Husk at 4 flytter sig uden for log(x).
+
+
+x^2-1 = (x-1)(x+1)
+
+lim(to inf) f(x) over g(x) = {
+	0		-> f is O(g)
+	const	-> f(x) = THETA(g(x))
+	INF		-> f is OMEGA(g)
+}

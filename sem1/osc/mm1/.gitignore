@@ -1,0 +1,10 @@
+jmod.ko
+.jmod.ko.cmd
+jmod.mod.c
+jmod.mod.o
+.jmod.mod.o.cmd
+jmod.o
+.jmod.o.cmd
+modules.order
+Module.symvers
+.tmp_versions
