@@ -8,11 +8,12 @@ A)
 
 B)
 
-Kan ses i den tilhørende lex fil.
+Kan ses i den tilhørende opg1.l fil.
 For at compile kør:
 
 ```
 make opg1
+./opg1
 ```
 
 C)
