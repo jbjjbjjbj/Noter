@@ -12,8 +12,7 @@ Kan ses i den tilhørende opg1.l fil.
 For at compile kør:
 
 ```
-make opg1
-./opg1
+make run BIN=opg1
 ```
 
 C)
@@ -45,6 +44,12 @@ starter med store: [A-Z][a-zA-z]+
 
 Dette laver jeg i opg3.l filen.
 
+## Opgave 4
 
+Se opg4.l fil og kør med.
+
+```
+make run BIN=opg4
+```
 
 
