@@ -111,7 +111,7 @@ digit -> *0* | ... | *9*
 symbol -> letter | digit
 symList -> symbol symList | e
 exp -> term expB
-exp -> termopr term expB | e
+expB -> termopr term expB | e
 termOpr -> *+* | *-*
 term -> factor termB
 termB -> factorOpr factor termB | e
