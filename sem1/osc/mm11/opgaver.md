@@ -23,3 +23,6 @@ Mange af dem er okay.
 Denne laver jeg måske senere.
 
 # Opgave 3
+
+Denne er løst i regn mappen. 
+Kør `make run` deri for at køre.
