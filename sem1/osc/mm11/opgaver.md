@@ -26,3 +26,7 @@ Denne laver jeg måske senere.
 
 Denne er løst i regn mappen. 
 Kør `make run` deri for at køre.
+
+# Opgave 4
+
+I regn2 mappen
