@@ -23,7 +23,7 @@
 statement_list: statement '\n'
 	  | statement_list statement '\n' ;
 
-statement:  expression					{;};
+statement:  expression					{printf("out \n");};
 
 expression: expression '+' expression   {printf("sum \n");}
 	  | expression '-' expression		{printf("sub \n");}
