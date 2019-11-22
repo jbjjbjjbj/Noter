@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <time.h>
+#include <string.h>
+#include <stdlib.h>
 
 #include "graph.h"
 
@@ -10,7 +12,7 @@ int step;
 
 void dfs_visit(graph_t *g, vertex_t *u, bool doprint) {
 	if( doprint ) {
-		printf("dfs_visit( %c )\n", u->ref);
+		printf("dfs_visit( %s )\n", u->ref);
 	}
 	step++;
 	u->dtime = step;
@@ -22,7 +24,6 @@ void dfs_visit(graph_t *g, vertex_t *u, bool doprint) {
 		vertex_t *v = e->to;
 		if( v->color == COLOR_WHITE ) {
 			graph_edge(&newg, v->ref, u->ref, 1);
-			v->p = u;
 			dfs_visit(g, v, doprint);
 		}
 		e = e->next;
@@ -47,16 +48,46 @@ void dfs(graph_t *g, bool doprint) {
 	}
 }
 
+#define BENCH 9999
+
 int main() {
+
+	// benchmark
+
+	// Start by generating
+	for(int i = 0; i < BENCH; i++) {
+		char from[5];
+		char to[5];
+		sprintf(from, "%d", i);
+		sprintf(to, "%d", rand() % BENCH);
+		graph_edge(&g, from, to, 1);
+	}
+	FILE *f = fopen("hej.dot", "w");
+	graph_to_dot(f, &g);
+
+	{
+		// Timing start
+		clock_t t;
+		t = clock();
+
+		dfs(&g, true);
+
+		// Timing stop
+		t = clock() - t;
+		double time_taken = ((double)t)/CLOCKS_PER_SEC; // in seconds
+		printf("Dfs took %f seconds\n", time_taken);
+	}
 	
-	graph_edge(&g, 'M', 'O', 1);
-	graph_edge(&g, 'O', 'P', 1);
-	graph_edge(&g, 'P', 'F', 1);
+	return 0;
+	
+	graph_edge(&g, "hej", "med", 1);
+	graph_edge(&g, "med", "dig", 1);
+	graph_edge(&g, "dig", "hvordan", 1);
 
-	graph_edge(&g, 'C', 'F', 1);
-	graph_edge(&g, 'F', 'c', 1);
+	graph_edge(&g, "det", "hvordan", 1);
+	graph_edge(&g, "hvordan", "det", 1);
 
-	//graph_to_dot(stdout, &g);
+	graph_to_dot(stdout, &g);
 	
 	// Timing start
 	clock_t t;

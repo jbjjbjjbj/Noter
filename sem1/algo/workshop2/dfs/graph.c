@@ -50,7 +50,7 @@ static vertex_t *create_vertex(char *ref) {
 	vertex_t *v = malloc(sizeof(vertex_t));
 
 	// Set values
-	v->ref = ref;
+	v->ref = strdup(ref);
 	v->color = COLOR_WHITE;
 	v->next = NULL;
 	v->adj = NULL;
@@ -90,10 +90,13 @@ edge_t *edge_next(graph_t *g, edge_t *e) {
 
 		// Find next vertex
 		v = vertex_next(g, v);
+		while( v ) {
+			// Check if found
+			if( v->adj ) {
+				return v->adj;
+			}
 
-		// Check if found
-		if( v ) {
-			return v->adj;
+			v = vertex_next(g, v);
 		}
 
 		// No next vertex
