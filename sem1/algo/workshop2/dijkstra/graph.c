@@ -166,13 +166,13 @@ int graph_to_dot(FILE *f, graph_t *g) {
 	// Label all nodes
 	vertex_t *v = vertex_next(g, NULL);
 	while( v ) {
-		fprintf(f, "%s [label=\"%s\"];\n", v->ref, v->ref);
+		fprintf(f, "%s [label=\"%s(%d)\"];\n", v->ref, v->ref, v->dist);
 		v = vertex_next(g, v);
 	}
 	// Print all the edges
 	edge_t *e = edge_next(g, NULL);
 	while( e ) {
-		fprintf(f, "%s -> %s [label = %d];\n", e->from->ref, e->to->ref, e->weight);
+		fprintf(f, "%s -> %s [label = %d%s];\n", e->from->ref, e->to->ref, e->weight, e->to->p == e->from ? " color=blue" : "");
 		e = edge_next(g, e);
 	}
 
@@ -190,19 +190,26 @@ int graph_from_dot(FILE *f, graph_t *g) {
 		*from = 0;
 		*to = 0;
 		weight = 0;
-		int c = fscanf(f, "%s -> %s [label = %d];", from, to, &weight);
+		int c = fscanf(f, "%s -> %s [label=%d];", from, to, &weight);
 		if( c <= 0 ) {
 			break;
 		}
 		if( *from == 0 || *to == 0 ) {
 			continue;
 		}
+		// Sorry i just want it to work
+		int tolen = strlen(to);
+		if( to[tolen-1] == ';' ) {
+			to[tolen-1] = 0;
+		}
 
 		weight = weight ? weight : 1;
-		printf("Creating edge from %s to %s with w: %d\n", from, to, weight);
-
-
+		//printf("Creating edge from %s to %s with w: %d\n", from, to, weight);
 
 		graph_edge(g, from, to, weight);
 	}
+}
+
+vertex_t *graph_vertex(graph_t *g, char *ref) {
+	return table_lookup(g, ref);
 }

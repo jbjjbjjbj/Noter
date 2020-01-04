@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "graph.h"
 
 typedef struct list_item {
@@ -34,12 +35,13 @@ void list_push(list_t *s, vertex_t *v) {
 }
 
 vertex_t *list_pop_smallest(list_t *s) {
+	//printf("beginning %s(%d)\n", s->begin->v->ref, s->begin->v->dist);
 	list_item_t *smallest = s->begin;
 
 	// Search
 	list_item_t *i = s->begin;
 	while( i ) {
-		if( i->v->dist != -1 && i->v->dist < smallest->v->dist ) {
+		if( smallest->v->dist == -1 || (i->v->dist != -1 && i->v->dist < smallest->v->dist) ) {
 			smallest = i;
 		}
 		i = i->next;
@@ -71,7 +73,7 @@ graph_t g;
 void relax(vertex_t *u, vertex_t *v) {
 	// Get edge between these two guys
 	edge_t *e = u->adj;
-	while(e && e->next && e->to->ref != v->ref) { 
+	while(e && e->next && strcmp(e->to->ref, v->ref)) { 
 		e = e->next; 
 	}
 
@@ -110,7 +112,7 @@ int main() {
 
 	graph_from_dot(stdin, &g);
 
-	//dijkstra(&g, g.vertexes['a']);
+	dijkstra(&g, graph_vertex(&g, "0"));
 
 	graph_to_dot(stdout, &g);
 

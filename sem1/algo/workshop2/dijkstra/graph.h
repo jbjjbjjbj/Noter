@@ -42,5 +42,6 @@ int graph_print_adj(graph_t *g, char *ref);
 void graph_edge(graph_t *g, char *from, char *to, int weight);
 edge_t *edge_next(graph_t *g, edge_t *e);
 vertex_t *vertex_next(graph_t *g, vertex_t *v);
+vertex_t *graph_vertex(graph_t *g, char *ref);
 
 #endif // GRAPH_H_
