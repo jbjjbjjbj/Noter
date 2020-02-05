@@ -69,9 +69,9 @@ end
 
 # Del 2.
 
-A bliver addresset via kolonner, så det er bedst at bruge column major.
+B bliver addresset via kolonner, så det er bedst at bruge column major.
 
-B bliver via rows så det er bedst at bruge row major.
+A bliver via rows så det er bedst at bruge row major.
 
 # Del 3.
 Yes because we multiply vektors together.
