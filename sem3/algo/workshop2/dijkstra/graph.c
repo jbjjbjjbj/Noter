@@ -184,6 +184,7 @@ int graph_to_dot(FILE *f, graph_t *g) {
 int graph_from_dot(FILE *f, graph_t *g) {
 	char from[100], to[100];
 	int weight;
+	int count = 0;
 	// just fscanf it
 	for(;;) {
 		// Set first to zero
@@ -207,7 +208,10 @@ int graph_from_dot(FILE *f, graph_t *g) {
 		//printf("Creating edge from %s to %s with w: %d\n", from, to, weight);
 
 		graph_edge(g, from, to, weight);
+		count++;
 	}
+
+	return count;
 }
 
 vertex_t *graph_vertex(graph_t *g, char *ref) {

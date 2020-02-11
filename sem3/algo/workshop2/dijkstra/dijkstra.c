@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "graph.h"
 
 typedef struct list_item {
@@ -110,11 +111,19 @@ void dijkstra(graph_t *g, vertex_t *s) {
 
 int main() {
 
-	graph_from_dot(stdin, &g);
+	int count = graph_from_dot(stdin, &g);
 
+	clock_t start, end;
+	double cpu_time_used;
+
+	start = clock();
 	dijkstra(&g, graph_vertex(&g, "0"));
+	end = clock();
+	cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
 
-	graph_to_dot(stdout, &g);
+	printf("%d;%f\n", count, cpu_time_used);
+
+	//graph_to_dot(stdout, &g);
 
 	return 0;
 }
