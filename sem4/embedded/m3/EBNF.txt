@@ -1,0 +1,14 @@
+l2frame = 0x02, len, l3packet, checksum, 0x03;
+len = byte;
+checksum = byte, byte;
+l3packet = type, recv_id, transducerl, quiet, nummasters, masters;
+recv_id = byte, byte, byte;
+transducerl = byte;
+quiet = byte;
+nummasters = byte;
+masters = master | { master };
+master = rssi, txid, txidtime;
+rssi = byte;
+txid = byte, byte, byte;
+txidtime = byte, byte;
+byte = 0 | 1 | 2 | ... | 255;
