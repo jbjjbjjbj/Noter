@@ -9,7 +9,8 @@ static ast_node_t *create_empty_node() {
 	memset(n, 0, sizeof(ast_node_t));
 }
 
-ast_node_t *insert_ctrl(enum ntype t, cond_t *c, ast_node_t *iftrue, ast_node_t *iffalse) {
+ast_node_t *insert_ctrl(enum ntype t, cond_t *c, ast_node_t *iftrue, ast_node_t *iffalse)
+{
 	ast_node_t *n = create_empty_node();
 
 	n->t = t;
@@ -20,7 +21,8 @@ ast_node_t *insert_ctrl(enum ntype t, cond_t *c, ast_node_t *iftrue, ast_node_t 
 	return n;
 }
 
-ast_node_t *insert_for(char *pre, cond_t *c, char *inc, ast_node_t *stuff) {
+ast_node_t *insert_for(char *pre, cond_t *c, char *inc, ast_node_t *stuff)
+{
 	ast_node_t *n = create_empty_node();
 
 	n->t = TFOR;
@@ -32,7 +34,8 @@ ast_node_t *insert_for(char *pre, cond_t *c, char *inc, ast_node_t *stuff) {
 	return n;
 }
 
-ast_node_t *insert_stm(ast_node_t *stm, ast_node_t *stm_list) {
+ast_node_t *insert_stm(ast_node_t *stm, ast_node_t *stm_list)
+{
 	ast_node_t *n = create_empty_node();
 
 	n->t = TSTM_LIST;
@@ -41,7 +44,8 @@ ast_node_t *insert_stm(ast_node_t *stm, ast_node_t *stm_list) {
 
 	return n;
 }
-ast_node_t *insert_ident(char *ident) {
+ast_node_t *insert_ident(char *ident)
+{
 	ast_node_t *n = create_empty_node();
 
 	n->t = TIDENT;
@@ -50,7 +54,8 @@ ast_node_t *insert_ident(char *ident) {
 	return n;
 }
 
-cond_t *insert_cond(uint8_t cmp, char *a, char *b) {
+cond_t *insert_cond(uint8_t cmp, char *a, char *b)
+{
 	cond_t *c = malloc( sizeof(cond_t));
 
 	c->cmp = cmp;
@@ -58,12 +63,13 @@ cond_t *insert_cond(uint8_t cmp, char *a, char *b) {
 	c->b = b;
 }
 
-void node_print(ast_node_t *node) {
-	if( !node ){
+void node_print(ast_node_t *node)
+{
+	if ( !node ){
 		printf("Nil");
 		return;
 	}
-	switch(node->t) {
+	switch (node->t) {
 		case TSTM_LIST: 
 			printf("Stm_list(");
 			node_print(node->list.children[0]);

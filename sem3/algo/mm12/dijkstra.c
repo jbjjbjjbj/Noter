@@ -14,7 +14,8 @@ typedef struct {
 	struct list_item *end;
 } list_t;
 
-void list_push(list_t *s, vertex_t *v) {
+void list_push(list_t *s, vertex_t *v)
+{
 	// Create 
 	list_item_t *i = malloc(sizeof(list_item_t));
 	i->next = NULL;
@@ -22,7 +23,7 @@ void list_push(list_t *s, vertex_t *v) {
 	i->v = v;
 
 	// Link
-	if( s->len == 0 ) {
+	if ( s->len == 0 ) {
 		s->begin = i;
 	} else {
 		s->end->next = i;
@@ -33,25 +34,26 @@ void list_push(list_t *s, vertex_t *v) {
 	s->len++;
 }
 
-vertex_t *list_pop_smallest(list_t *s) {
+vertex_t *list_pop_smallest(list_t *s)
+{
 	list_item_t *smallest = s->begin;
 
 	// Search
 	list_item_t *i = s->begin;
-	while( i ) {
-		if( i->v->dist != -1 && i->v->dist < smallest->v->dist ) {
+	while ( i ) {
+		if ( i->v->dist != -1 && i->v->dist < smallest->v->dist ) {
 			smallest = i;
 		}
 		i = i->next;
 	}
 
-	if( smallest == s->begin ) {
+	if ( smallest == s->begin ) {
 		s->begin = smallest->next;
 	} else {
 		smallest->prev->next = smallest->next;
 	}
 
-	if( smallest == s->end ) {
+	if ( smallest == s->end ) {
 		s->end = smallest->prev;
 	} else {
 		smallest->next->prev = smallest->prev;
@@ -68,20 +70,22 @@ vertex_t *list_pop_smallest(list_t *s) {
 graph_t g;
 
 // Assumes u has an edge to v
-void relax(vertex_t *u, vertex_t *v) {
+void relax(vertex_t *u, vertex_t *v)
+{
 	// Get edge between these two guys
 	edge_t *e = u->adj;
-	while(e && e->next && e->to->ref != v->ref) { 
+	while (e && e->next && e->to->ref != v->ref) { 
 		e = e->next; 
 	}
 
-	if( v->dist == -1 || v->dist > (u->dist + e->weight) ) {
+	if ( v->dist == -1 || v->dist > (u->dist + e->weight) ) {
 		v->dist = u->dist + e->weight;
 		v->p = u;
 	}
 }
 
-void dijkstra(graph_t *g, vertex_t *s) {
+void dijkstra(graph_t *g, vertex_t *s)
+{
 	list_t list;
 	list.len = 0;
 	list.end = list.begin = 0;
@@ -90,13 +94,13 @@ void dijkstra(graph_t *g, vertex_t *s) {
 
 	{
 		vertex_t *v = vertex_next(g, NULL);
-		while( v ) {
+		while ( v ) {
 			list_push(&list, v);
 			v = vertex_next(g, v);
 		}
 	}
 
-	while( list.len ) {
+	while ( list.len ) {
 		vertex_t *u = list_pop_smallest(&list);
 		edge_t *e = u->adj;
 		while( e ) {
@@ -106,7 +110,8 @@ void dijkstra(graph_t *g, vertex_t *s) {
 	}
 }
 
-int main() {
+int main()
+{
 
 	graph_edge(&g, 'a', 'b', 2);
 	graph_edge(&g, 'a', 'f', 1);

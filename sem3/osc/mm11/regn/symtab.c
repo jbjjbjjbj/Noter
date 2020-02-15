@@ -2,9 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-unsigned int hash(char *s) {
+unsigned int hash(char *s)
+{
 	uint32_t hv = 0;
-	for( int i = 0; s[i] != '\0'; i++ ) {
+	for ( int i = 0; s[i] != '\0'; i++ ) {
 		// take MSB 6 bits of hv and xors with LSB of s[i]
 		uint32_t v = ( hv >> 26 ) ^ (s[i] & 0x3f);
 
@@ -16,7 +17,8 @@ unsigned int hash(char *s) {
 }
 
 
-symnode_t *sym_insert(char *var) {
+symnode_t *sym_insert(char *var)
+{
 	unsigned int index = hash(var);
 
 	// Save old value
@@ -24,7 +26,7 @@ symnode_t *sym_insert(char *var) {
 
 	// Make new
 	symbolarray[index] = malloc(sizeof(symnode_t));
-	if( symbolarray[index] == NULL ) {
+	if ( symbolarray[index] == NULL ) {
 		// If malloc failed
 		symbolarray[index] = oldSym;
 		return NULL;
@@ -37,12 +39,13 @@ symnode_t *sym_insert(char *var) {
 	return symbolarray[index];
 }
 
-symnode_t *sym_lookup(char *var) {
+symnode_t *sym_lookup(char *var)
+{
 	unsigned int index = hash(var);
 	symnode_t *n = symbolarray[index];
 
 	// Look trough list
-	while(n != NULL && strcmp(n->name, var) != 0) {
+	while (n != NULL && strcmp(n->name, var) != 0) {
 		n = n->next;
 	}
 

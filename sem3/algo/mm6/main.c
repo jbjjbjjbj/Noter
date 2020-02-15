@@ -2,7 +2,8 @@
 
 #include "tree.h"
 
-int main() {
+int main()
+{
 	tree_t t;
 	t.root = 0;
 

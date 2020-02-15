@@ -3,12 +3,13 @@
 #include <stdint.h>
 #include <time.h>
 
-uint64_t mult(uint64_t x, uint64_t y, unsigned int bits) {
+uint64_t mult(uint64_t x, uint64_t y, unsigned int bits)
+{
 	/* Check if they expect more than 64 bits. */
-	if( bits > 64 ) {
+	if ( bits > 64 ) {
 		printf("Sorry we cant handle higher than 64 bits\n");
 		exit(1);
-	} else if(bits <= 1) {
+	} else if (bits <= 1) {
 		return x && y;
 	}
 
@@ -37,7 +38,8 @@ uint64_t mult(uint64_t x, uint64_t y, unsigned int bits) {
 }
 
 
-int main(void) {
+int main(void)
+{
 
 	uint32_t a = 0xFFFFFF;
 	uint8_t  b = 55;

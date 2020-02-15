@@ -6,7 +6,8 @@
 
 #define OUT_OFF_BOUNDS 2
 
-void llist_init(llist_t *list) {
+void llist_init(llist_t *list)
+{
 	/* Zero out structure */
 	list->head = list->root = NULL;
 
@@ -14,12 +15,13 @@ void llist_init(llist_t *list) {
 
 }
 
-void llist_append(llist_t *list, int val) {
+void llist_append(llist_t *list, int val)
+{
 	/* Insert node after HEAD */
 	list->head = node_insert(list->head, val);
 
 	/* Check if was list is empty */
-	if( list->len == 0 ) {
+	if ( list->len == 0 ) {
 		/* Set root */
 		list->root = list->head;
 	}
@@ -28,9 +30,10 @@ void llist_append(llist_t *list, int val) {
 	list->len++;
 }
 
-node_t *llist_get_node(llist_t *list, unsigned int index) {
+node_t *llist_get_node(llist_t *list, unsigned int index)
+{
 	/* Check if we have it */
-	if( index >= list->len ) {
+	if ( index >= list->len ) {
 		return NULL;
 	}
 
@@ -42,7 +45,7 @@ node_t *llist_get_node(llist_t *list, unsigned int index) {
 	node_t *node = direc > 0 ? list->root : list->head;
 	
 	/* Go to index */
-	while( pos != index ) {
+	while ( pos != index ) {
 		/* TODO kinda risky, we trust our math and len */
 		node = direc > 0 ? node->next : node->prev;
 
@@ -52,10 +55,11 @@ node_t *llist_get_node(llist_t *list, unsigned int index) {
 	return node;
 }
 
-int llist_get(llist_t *list, unsigned int index) {
+int llist_get(llist_t *list, unsigned int index)
+{
 	/* Get node */
 	node_t *node = llist_get_node(list, index);
-	if( node == NULL ) {
+	if ( node == NULL ) {
 		/* Yes i know this is stupid */
 		return -1;
 	}
@@ -65,19 +69,20 @@ int llist_get(llist_t *list, unsigned int index) {
 }
 
 
-int llist_pop(llist_t *list, unsigned int index) {
+int llist_pop(llist_t *list, unsigned int index)
+{
 	/* Get node */
 	node_t *node = llist_get_node(list, index);
-	if( node == NULL ) {
+	if ( node == NULL ) {
 		/* Yes i know this is stupid */
 		return -1;
 	}
 
 	/* Update root and head if we delete it */
-	if( node == list->root ) {
+	if ( node == list->root ) {
 		list->root = node->next;
 	}
-	if( node == list->head ) {
+	if ( node == list->head ) {
 		list->head = node->prev;
 	}
 	

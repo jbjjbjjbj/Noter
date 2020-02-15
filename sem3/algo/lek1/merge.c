@@ -6,24 +6,26 @@
 
 #define DO_PRINT 0
 
-void printArr(int *arr, size_t len) {
+void printArr(int *arr, size_t len)
+{
 	printf("{");
-	for(int i = 0; i < len; i++) {
+	for (int i = 0; i < len; i++) {
 		printf(" %d%s", arr[i], i+1 == len ? " " : ",");
 	}
 	printf("}\n");
 }
 
-int *genArr(size_t len, int div) {
+int *genArr(size_t len, int div)
+{
 	/* Make array */
 	int *arr = (int *) malloc(len * sizeof(int));
 
-	if( arr == NULL) {
+	if (arr == NULL) {
 		return NULL;
 	}
 
 	/* Fill it with random */
-	while( len-- ) {
+	while (len--) {
 		arr[len] = div - (rand() % (div*2));
 	}
 
@@ -31,7 +33,8 @@ int *genArr(size_t len, int div) {
 
 }
 
-int mergeSort(int *arr, size_t len) {
+int mergeSort(int *arr, size_t len)
+{
 	/* Check if len is one(then it's sorted */
 	if (len <= 1) {
 		return 0;
@@ -42,11 +45,11 @@ int mergeSort(int *arr, size_t len) {
 
 	/* Make arrays */
 	int *left = (int *) malloc(q * sizeof(int));
-	if( left == NULL ) {
+	if (left == NULL) {
 		return 1;
 	}
 	int *right = (int *) malloc(rl * sizeof(int));
-	if( right == NULL ) {
+	if (right == NULL) {
 		return 1;
 	}
 
@@ -59,8 +62,8 @@ int mergeSort(int *arr, size_t len) {
 	mergeSort(right, rl);
 
 	/* Merge them into arr */
-	for(int i=0, j=0, k = 0; k < len; k++) {
-		if( i < q && ( j == rl || left[i] <= right[j] ) ) {
+	for (int i=0, j=0, k = 0; k < len; k++) {
+		if ( i < q && ( j == rl || left[i] <= right[j] ) ) {
 			arr[k] = left[ i++ ];
 		} else {
 			arr[k] = right[ j++ ];
@@ -74,7 +77,8 @@ int mergeSort(int *arr, size_t len) {
 	return 0;
 }
 
-void test(size_t len) {
+void test(size_t len) 
+{
 
 	int *a = genArr(len, len);
 
@@ -97,7 +101,8 @@ void test(size_t len) {
 	free(a);
 }
 
-void bench() {
+void bench()
+{
 
 	size_t len = SIZE_MAX;
 
@@ -107,7 +112,8 @@ void bench() {
 	}
 }
 
-int main(void) {
+int main(void)
+{
 
 	bench();
 

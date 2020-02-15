@@ -2,10 +2,11 @@
 #include "node.h"
 #include "llist.h"
 
-void list_print(node_t *root) {
+void list_print(node_t *root)
+{
 	int index = 0;
 	/* Loop through notes and print them */
-	while( root != NULL ) {
+	while ( root != NULL ) {
 		/* Print a value */
 		printf("%d: %d\n", index++, root->val);
 
@@ -15,7 +16,8 @@ void list_print(node_t *root) {
 }
 
 /* Remove node */
-int main() {
+int main()
+{
 	
 	/* Do some stuff */
 	llist_t list;
@@ -39,7 +41,7 @@ int main() {
 
 	list_print(list.root);
 
-	while( list.len ) {
+	while ( list.len ) {
 		printf("Popped %d\n", llist_pop(&list, 0));
 	}
 }

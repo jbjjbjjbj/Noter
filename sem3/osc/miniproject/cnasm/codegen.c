@@ -5,10 +5,11 @@
 #include <stdlib.h>
 #include "ast.h"
 
-static void gencondjmp(FILE *f, cond_t *c, bool neg) {
+static void gencondjmp(FILE *f, cond_t *c, bool neg)
+{
 	uint8_t cmp = neg ? c->cmp^0x80 : c->cmp;
 	fprintf(f, "cmp %s %s\n", c->a, c->b);
-	switch(cmp) {
+	switch (cmp) {
 		case CEQ:
 			fprintf(f, "je ");
 			break;
@@ -33,11 +34,12 @@ static void gencondjmp(FILE *f, cond_t *c, bool neg) {
 	}
 }
 
-static void genif(FILE *f, struct genctx *ctx, ast_node_t *n) {
+static void genif(FILE *f, struct genctx *ctx, ast_node_t *n)
+{
 	bool doElse = n->flowctrl.iffalse;
 	// Create conditional jump
 	gencondjmp(f, n->flowctrl.condition, true);
-	if( doElse ) {
+	if ( doElse ) {
 		fprintf(f, "else_%d\n", ctx->nested);
 	} else {
 		fprintf(f, "end_%d\n", ctx->nested);
@@ -48,7 +50,7 @@ static void genif(FILE *f, struct genctx *ctx, ast_node_t *n) {
 	gentree(f, &octx, n->flowctrl.iftrue);
 	
 	// Do else
-	if( doElse ) {
+	if ( doElse ) {
 		fprintf(f, "jmp end_%d\n", ctx->nested);
 		fprintf(f, "else_%d:\n", ctx->nested);
 		gentree(f, &octx, n->flowctrl.iffalse);
@@ -58,7 +60,8 @@ static void genif(FILE *f, struct genctx *ctx, ast_node_t *n) {
 	fprintf(f, "end_%d:\n", ctx->nested);
 }
 
-static void genwhile(FILE *f, struct genctx *ctx, ast_node_t *n) {
+static void genwhile(FILE *f, struct genctx *ctx, ast_node_t *n)
+{
 	// Create loop label
 	fprintf(f, "loop_%d:\n", ctx->nested);
 
@@ -77,7 +80,8 @@ static void genwhile(FILE *f, struct genctx *ctx, ast_node_t *n) {
 	fprintf(f, "end_%d:\n", ctx->nested);
 }
 
-static void genfor(FILE *f, struct genctx *ctx, ast_node_t *n) {
+static void genfor(FILE *f, struct genctx *ctx, ast_node_t *n)
+{
 	// Do pre stuff
 	fprintf(f, "%s\n", n->forloop.pre);
 
@@ -101,15 +105,16 @@ static void genfor(FILE *f, struct genctx *ctx, ast_node_t *n) {
 	fprintf(f, "end_%d:\n", ctx->nested);
 }
 
-void gentree(FILE *f, struct genctx *ctx, ast_node_t *n) {
-	if( !n ) {
+void gentree(FILE *f, struct genctx *ctx, ast_node_t *n)
+{
+	if ( !n ) {
 		return;
 	}
-	if( ctx == NULL ) {
+	if ( ctx == NULL ) {
 		ctx = malloc(sizeof(struct genctx));
 		ctx->nested = 0;
 	}
-	switch(n->t) {
+	switch (n->t) {
 		case TSTM_LIST: 
 			gentree(f, ctx, n->list.children[0]);
 			gentree(f, ctx, n->list.children[1]);

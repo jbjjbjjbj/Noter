@@ -18,7 +18,8 @@ typedef struct vertex_struct {
 	list_node_t *adj;
 } vertex_t;
 
-vertex_t *create_vertex(char ref) {
+vertex_t *create_vertex(char ref)
+{
 	// Get some space TODO check for null
 	vertex_t *v = malloc(sizeof(vertex_t));
 
@@ -30,7 +31,8 @@ vertex_t *create_vertex(char ref) {
 	v->adj = NULL;
 }
 
-vertex_t *add_adj(vertex_t *v, vertex_t *add) {
+vertex_t *add_adj(vertex_t *v, vertex_t *add)
+{
 	list_node_t *oldN = v->adj;
 
 	// Create new list node
@@ -43,10 +45,11 @@ vertex_t *add_adj(vertex_t *v, vertex_t *add) {
 	return add;
 }
 
-void print_adj(vertex_t *v) {
+void print_adj(vertex_t *v)
+{
 	list_node_t *n = v->adj;
 	printf("[ ");
-	while(n) {
+	while (n) {
 		printf("%c ", *((char *)n->val));
 		n = n->next;
 	}
@@ -55,13 +58,14 @@ void print_adj(vertex_t *v) {
 
 vertex_t *vertexes[128];
 
-void add_edge(char a, char b) {
+void add_edge(char a, char b)
+{
 	// Does a exists
-	if( vertexes[a] == NULL ) {
+	if ( vertexes[a] == NULL ) {
 		vertexes[a] = create_vertex(a);
 	}
 	// What about b
-	if( vertexes[b] == NULL ) {
+	if ( vertexes[b] == NULL ) {
 		vertexes[b] = create_vertex(b);
 	}
 
@@ -75,28 +79,30 @@ typedef struct {
 	list_node_t *out;
 } queue_t;
 
-void enqueue(queue_t *q, vertex_t *v) {
+void enqueue(queue_t *q, vertex_t *v)
+{
 	list_node_t *n = malloc(sizeof(list_node_t));
 	n->val = v;
 
 	// Add at end
 	list_node_t *old = q->in;
 	q->in = n;
-	if( old ) {
+	if ( old ) {
 		old->next = n;
 	}
 
 	// Make sure we have an out
-	if( q->out == NULL ) {
+	if ( q->out == NULL ) {
 		q->out = n;
 	}
 
 	q->len++;
 }
 
-vertex_t *dequeue(queue_t *q) {
+vertex_t *dequeue(queue_t *q)
+{
 	list_node_t *n = q->out;
-	if( n == NULL ) {
+	if ( n == NULL ) {
 		return NULL;
 	}
 	vertex_t *v = (vertex_t *)n->val;
@@ -110,17 +116,18 @@ vertex_t *dequeue(queue_t *q) {
 	return v;
 }
 
-void bfs(vertex_t *s) {
+void bfs(vertex_t *s)
+{
 	queue_t q = {0, NULL, NULL };
 	enqueue(&q, s);
 	s->dist = 0;
 	
-	while( q.len ) {
+	while ( q.len ) {
 		vertex_t *u = dequeue(&q);
 		list_node_t *n = u->adj;
-		while( n ) {
+		while ( n ) {
 			vertex_t *v = (vertex_t *)n->val;
-			if( v->color == COL_WHITE ) {
+			if ( v->color == COL_WHITE ) {
 				v->color = COL_GRAY;
 				v->dist = u->dist + 1;
 				v->p = u;
@@ -133,7 +140,8 @@ void bfs(vertex_t *s) {
 	
 }
 
-int main() {
+int main()
+{
 	add_edge('s', 'd'); // S
 	add_edge('s', 'c');
 	add_edge('s', 'a');
@@ -149,8 +157,8 @@ int main() {
 	bfs(vertexes['s']);
 
 	char c;
-	while( (c = getchar()) != EOF) {
-		if( vertexes[c] != NULL ) {
+	while ( (c = getchar()) != EOF) {
+		if ( vertexes[c] != NULL ) {
 			print_adj(vertexes[c]);
 			printf("%d\n", vertexes[c]->dist);
 		} else if (c == 10) {

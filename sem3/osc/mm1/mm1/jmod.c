@@ -8,7 +8,8 @@ static int major_num;
 static int busy;
 
 
-static int cool_open(struct inode *inode, struct file *file) {
+static int cool_open(struct inode *inode, struct file *file)
+{
 	/* Check if we are already serving someone */
 	if (busy) {
 		return -EBUSY;
@@ -18,13 +19,15 @@ static int cool_open(struct inode *inode, struct file *file) {
 	return 0;
 }
 
-static int cool_release (struct inode *inode, struct file *file) {
+static int cool_release (struct inode *inode, struct file *file)
+{
 	busy = 0;
 
 	return 0;
 }
 
-static ssize_t cool_read (struct file *filp, char *buffer, size_t len, loff_t *offset) {
+static ssize_t cool_read (struct file *filp, char *buffer, size_t len, loff_t *offset)
+{
 
 	char str[12] = "hej med dig";
 	int i;

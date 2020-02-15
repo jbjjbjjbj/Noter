@@ -15,13 +15,14 @@ typedef struct {
 } queue_t;
 
 /* Queue functions */
-int queue_init(queue_t *q, size_t cap) {
+int queue_init(queue_t *q, size_t cap)
+{
 	/* Make the struct and set i to zero */
 	memset(q, 0, sizeof(queue_t));
 
 	/* Allocate the buffer */
 	q->buff = (int *) malloc(cap * sizeof(int));
-	if( q->buff == NULL ) {
+	if ( q->buff == NULL ) {
 		return 1;
 	}
 
@@ -30,15 +31,17 @@ int queue_init(queue_t *q, size_t cap) {
 	return 0;
 }
 
-void queue_free(queue_t *q) {
+void queue_free(queue_t *q)
+{
 	/* Free the heap buffer */
 	free(q->buff);
 }
 
-int queue_place(queue_t *q, int val) {
+int queue_place(queue_t *q, int val)
+{
 	/* Check if full */
 	printf("len: %d\n", q->len);
-	if( q->len >= q->cap) {
+	if ( q->len >= q->cap) {
 		printf("ERR: Full\n");
 		return EFULL;
 	}
@@ -53,15 +56,16 @@ int queue_place(queue_t *q, int val) {
 	return 0;
 }
 
-int queue_get(queue_t *q, int *val) {
+int queue_get(queue_t *q, int *val)
+{
 	/* Check if empty */
-	if( !q->len ) {
+	if ( !q->len ) {
 		printf("ERR: Empty\n");
 		return EMPTY;
 	}
 
 	/* Read value */
-	if( val != NULL ){
+	if ( val != NULL ){
 		*val = q->buff[q->tail];
 	}
 
@@ -72,25 +76,26 @@ int queue_get(queue_t *q, int *val) {
 	return 0;
 }
 
-int main(void) {
+int main(void)
+{
 	int in;
 	char com;
 
 	queue_t q;
 	queue_init(&q, 16);
 
-	for(;;) {
+	for (;;) {
 		/* Read a command */
 		scanf("%c", &com);
 
-		if( com == 'w') {
+		if ( com == 'w') {
 			printf("> ");
 			scanf("%d", &in);
 			queue_place(&q, in);
-		} else if( com == 'r' ) {
+		} else if ( com == 'r' ) {
 			queue_get(&q, &in);
 			printf("%d\n", in);
-		} else if( com == 'q' ) {
+		} else if ( com == 'q' ) {
 			break;
 		}
 	}

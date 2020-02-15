@@ -10,7 +10,8 @@
 
 struct itimerval timer;
 
-void timer_handler(int signum) {
+void timer_handler(int signum)
+{
     /* Handy structure reference */
     struct timeval *tv = &timer.it_value;
     printf("Hey we hit the alarm\n\a");
@@ -22,9 +23,9 @@ void timer_handler(int signum) {
 	if (tv->tv_usec == 0) {
 	    tv->tv_usec = 999999;
 	} else if (tv->tv_usec > ENDUSEC) {
-	    tv->tv_usec *= SPEED;
+		tv->tv_usec *= SPEED;
 	    if (tv->tv_usec < ENDUSEC) {
-		tv->tv_usec = ENDUSEC;
+			tv->tv_usec = ENDUSEC;
 	    }
 	} else {
 	    /* Return letting the timer be set to ENDUSEC */
@@ -36,12 +37,13 @@ void timer_handler(int signum) {
     /* Set alarm */
     int err = setitimer(ITIMER_REAL, &timer, NULL);
     if (err) {
-	printf("Hey we got an error guys\n");
-	exit(1);
+		printf("Hey we got an error guys\n");
+		exit(1);
     }
 }
 
-int main() {
+int main()
+{
     /* Setup handler for timer */
     struct sigaction sa;
     memset(&sa, 0, sizeof(sa)); /* Remeber to set all fields to zero */

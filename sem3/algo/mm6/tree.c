@@ -4,7 +4,8 @@
 
 #include "tree.h"
 
-static node_t *create_node(unsigned int index, char *val) {
+static node_t *create_node(unsigned int index, char *val)
+{
 	node_t *node = malloc( sizeof(node_t) );
 	memset(node, 0, sizeof(node_t));
 
@@ -13,7 +14,8 @@ static node_t *create_node(unsigned int index, char *val) {
 }
 
 /* Comments are based of dir = CHILD_LEFT */
-void node_rotate(tree_t *tree, node_t *x, int dir) {
+void node_rotate(tree_t *tree, node_t *x, int dir)
+{
 	/* Node below which we should rotate with */
 	node_t *y = x->children[!dir];
 
@@ -21,7 +23,7 @@ void node_rotate(tree_t *tree, node_t *x, int dir) {
 	x->children[!dir] = y->children[dir];
 
 	/* Update parent */
-	if( y->children[dir] ) {
+	if ( y->children[dir] ) {
 		y->children[dir]->p = x;
 	}
 
@@ -29,9 +31,9 @@ void node_rotate(tree_t *tree, node_t *x, int dir) {
 	y->p = x->p;
 
 	/* Check if y is new root if not update x's parent */
-	if( !y->p ) {
+	if ( !y->p ) {
 		tree->root = y;
-	} else if( x == x->p->children[CHILD_LEFT]) {
+	} else if ( x == x->p->children[CHILD_LEFT]) {
 		x->p->children[CHILD_LEFT] = y;
 	} else {
 		x->p->children[CHILD_RIGHT] = y;
@@ -43,21 +45,22 @@ void node_rotate(tree_t *tree, node_t *x, int dir) {
 
 }
 
-static void insert_fixup(tree_t *tree, node_t *z) {
-	while( z->p && z->p->black == false ) {
+static void insert_fixup(tree_t *tree, node_t *z)
+{
+	while ( z->p && z->p->black == false ) {
 		/* Set the right direction */
 		int dir = (z->p == z->p->p->children[CHILD_LEFT]) ? CHILD_RIGHT : CHILD_LEFT;
 
 		/* Get uncle */
 		node_t *y = z->p->p->children[dir];
-		if( y && !y->black ) {
+		if ( y && !y->black ) {
 			/* Case 1 */
 			z->p->black = true;
 			y->black = true;
 			z->p->p->black = false;
 
 			z = z->p->p;
-		} else if( z == z->p->children[dir] ) {
+		} else if ( z == z->p->children[dir] ) {
 			/* Case 2 */
 			z = z->p;
 			node_rotate(tree, z, !dir);
@@ -73,10 +76,11 @@ static void insert_fixup(tree_t *tree, node_t *z) {
 
 }
 
-static node_t *insert_recur(node_t *node, unsigned int index, char *val) {
+static node_t *insert_recur(node_t *node, unsigned int index, char *val)
+{
 	int dir = node->index < index ? CHILD_RIGHT : CHILD_LEFT;
 
-	if( node->children[dir] ) {
+	if ( node->children[dir] ) {
 		return insert_recur(node->children[dir], index, val);
 	}
 
@@ -88,8 +92,9 @@ static node_t *insert_recur(node_t *node, unsigned int index, char *val) {
 	return new;
 }
 
-node_t *tree_insert_pleb(tree_t *tree, unsigned int index, char *val) {
-	if( !tree->root ) {
+node_t *tree_insert_pleb(tree_t *tree, unsigned int index, char *val)
+{
+	if ( !tree->root ) {
 		tree->root = create_node(index, val);
 		return tree->root;
 	}
@@ -97,8 +102,9 @@ node_t *tree_insert_pleb(tree_t *tree, unsigned int index, char *val) {
 	return insert_recur(tree->root, index, val); 
 }
 
-node_t *tree_insert(tree_t *tree, unsigned int index, char *val) {
-	if( !tree->root ) {
+node_t *tree_insert(tree_t *tree, unsigned int index, char *val)
+{
+	if ( !tree->root ) {
 		tree->root = create_node(index, val);
 		tree->root->black = true;
 		return tree->root;
@@ -110,11 +116,12 @@ node_t *tree_insert(tree_t *tree, unsigned int index, char *val) {
 	return new;
 }
 
-char *tree_search(tree_t *tree, unsigned int index) {
+char *tree_search(tree_t *tree, unsigned int index)
+{
 	node_t *z = tree->root;
-	while( z->index != index ) {
+	while ( z->index != index ) {
 		z = z->children[z->index < index ? CHILD_RIGHT : CHILD_LEFT];
-		if( !z ) {
+		if ( !z ) {
 			return NULL;
 		}
 	}
@@ -122,14 +129,16 @@ char *tree_search(tree_t *tree, unsigned int index) {
 	return z->value;
 }
 
-static inline void print_indent(int num) {
-	for( int i = 0; i < num; i++ ) {
+static inline void print_indent(int num)
+{
+	for ( int i = 0; i < num; i++ ) {
 		printf("  ");
 	}
 }
 
-static inline void print_text(node_t *node, bool bold) {
-	if( bold ) {
+static inline void print_text(node_t *node, bool bold)
+{
+	if ( bold ) {
 		printf("\033[1m%d\033[22m\n", node->index);
 	} else {
 		printf("%d\n", node->index);
@@ -137,8 +146,9 @@ static inline void print_text(node_t *node, bool bold) {
 
 }
 
-static void print_recur(node_t *node, int ident) {
-	if( !node ) {
+static void print_recur(node_t *node, int ident)
+{
+	if ( !node ) {
 		return;
 	}
 	print_recur(node->children[CHILD_RIGHT], ident+1);
@@ -149,7 +159,8 @@ static void print_recur(node_t *node, int ident) {
 	print_recur(node->children[CHILD_LEFT], ident+1);
 }
 
-void tree_print(tree_t *tree) {
+void tree_print(tree_t *tree)
+{
 	print_recur(tree->root, 0);	
 }
 

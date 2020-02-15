@@ -10,8 +10,9 @@ graph_t g;
 graph_t newg;
 int step;
 
-void dfs_visit(graph_t *g, vertex_t *u, bool doprint) {
-	if( doprint ) {
+void dfs_visit(graph_t *g, vertex_t *u, bool doprint)
+{
+	if ( doprint ) {
 		printf("dfs_visit( %s )\n", u->ref);
 	}
 	step++;
@@ -20,9 +21,9 @@ void dfs_visit(graph_t *g, vertex_t *u, bool doprint) {
 	
 	// For every adj
 	edge_t *e = u->adj;
-	while( e ) {
+	while ( e ) {
 		vertex_t *v = e->to;
-		if( v->color == COLOR_WHITE ) {
+		if ( v->color == COLOR_WHITE ) {
 			graph_edge(&newg, v->ref, u->ref, 1);
 			dfs_visit(g, v, doprint);
 		}
@@ -35,13 +36,14 @@ void dfs_visit(graph_t *g, vertex_t *u, bool doprint) {
 }
 
 
-void dfs(graph_t *g, bool doprint) {
+void dfs(graph_t *g, bool doprint)
+{
 	step = 0;
 
 	// For every edge
 	vertex_t *u = vertex_next(g, NULL);
-	while( u ) {
-		if( u->color == COLOR_WHITE ) {
+	while ( u ) {
+		if ( u->color == COLOR_WHITE ) {
 			dfs_visit(g, u, doprint);
 		}
 		u = vertex_next(g, u);
@@ -50,12 +52,13 @@ void dfs(graph_t *g, bool doprint) {
 
 #define BENCH 9999
 
-int main() {
+int main()
+{
 
 	// benchmark
 
 	// Start by generating
-	for(int i = 0; i < BENCH; i++) {
+	for (int i = 0; i < BENCH; i++) {
 		char from[5];
 		char to[5];
 		sprintf(from, "%d", i);
