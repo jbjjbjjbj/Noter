@@ -8,53 +8,58 @@ import time
 limitre = ( -2, 1 )
 limitim = ( -1.5, 1.5 )
 
-def lota(c, T, l):
-    z = 0
-    for i in range(l):
-        nz = z*z + c
-
-        # Check if we found or z
-        if np.abs(nz) > T:
-            break
-
-        z = nz
-    else:
-        # If we did not find z, use l
-        return l
-
-    return np.abs(z)
-
 def mangel(pre, pim, T, l):
+    """
+    Calculate the mangelbrot image
+    (pre, pim) discribes the image size. Use T and l to tune the mangelbrot
+    This function uses the global variables limitre and limitim to determine
+    the c-mesh range.
+
+    :param pre: Number of real numbers used
+    :param pim: Number of imaginary numbers
+    :param T: Mangelbrot threshold
+    :param l: Iterations
+    """
     # Preallocate result array and z array
     rs = np.zeros((pre, pim))
     z = np.zeros((pre, pim))
 
-    # Calculate C matrix
+    # Used to calculate c-mesh
     re = np.linspace(limitre[0], limitre[1], pre)
     im = np.linspace(limitim[0], limitim[1], pim)
 
-    # Calculate C by multiplying the scalers in. Remember to move it to the beggining og the c-mesh limit
+    # Calculate c-mesh
     grid = np.add.outer(re, 1j * im)
 
+    # Calculate ι for all complex numbers
     for i in range(l):
+        # This will generate warnings for some of the values rising above T.
+        # Because these values are above T they are not used, thus the warnings
+        # can be ignored
         z = z*z + grid
 
-        # Extract all the ones that are under the threshold
+        # This will generate 1 in all the places 
+        # where z < T and zeros elsewhere
         below = (np.abs(z) < T)
 
+        # Add this to the result
+        # Because the ones that pass T are 0 
+        # they will stop counting.
+        #
+        # If a specific z never reaches >= T its value in rs will
+        # be l
         rs += below
-    
-    rs[ rs==rs.max() ] = l
+
     rs /= l
-        
+    
     return rs
 
-start = time.time()
-arr = mangel(500, 500, 2, 100)
-end = time.time()
+if __name__ == "__main__":
+    start = time.time()
+    arr = mangel(500, 500, 2, 100)
+    end = time.time()
 
-plt.imshow(arr, cmap=plt.cm.hot, vmin=0, vmax=1)
-plt.savefig("test.png")
-plt.savefig("test.pdf")
+    plt.imshow(arr, cmap=plt.cm.hot, vmin=0, vmax=1)
+    plt.savefig("opt.png")
 
-print(f"Took {end - start} seconds")
+    print(f"Took {end - start} seconds")
