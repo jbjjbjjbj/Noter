@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import numpy as np
 import matplotlib.pyplot as plt
 import time
@@ -8,33 +6,23 @@ import time
 limitre = ( -2, 1 )
 limitim = ( -1.5, 1.5 )
 
-def mangel(pre, pim, T, l):
+def numpyiota(grid, T, l, savez):
     """
-    Calculate the mangelbrot image
-    (pre, pim) discribes the image size. Use T and l to tune the mangelbrot
-    This function uses the global variables limitre and limitim to determine
-    the c-mesh range.
-
-    :param pre: Number of real numbers used
-    :param pim: Number of imaginary numbers
-    :param T: Mangelbrot threshold
-    :param l: Iterations
+    Calculates the ι using numpy arrays.
+    This works with both numpy.arrays and numpy.ndarrays
+    Also devides by l
+    
+    :param grid: c-mesh. Shape will be used to make result
+    :param savez: Return z as the second element of returned tuple
     """
     # Preallocate result array and z array
-    rs = np.zeros((pre, pim))
-    z = np.zeros((pre, pim))
-
-    # Used to calculate c-mesh
-    re = np.linspace(limitre[0], limitre[1], pre)
-    im = np.linspace(limitim[0], limitim[1], pim)
-
-    # Calculate c-mesh
-    grid = np.add.outer(re, 1j * im)
+    rs = np.zeros(grid.shape)
+    z = np.zeros(grid.shape)
 
     # Calculate ι for all complex numbers
     for i in range(l):
         # This will generate warnings for some of the values rising above T.
-        # Because these values are above T they are not used, thus the warnings
+        # Because these values become NAN they are not used, thus the warnings
         # can be ignored
         z = z*z + grid
 
@@ -51,15 +39,31 @@ def mangel(pre, pim, T, l):
         rs += below
 
     rs /= l
-    
-    return rs
 
-if __name__ == "__main__":
-    start = time.time()
-    arr = mangel(500, 500, 2, 100)
-    end = time.time()
+    if not savez:
+        z = None
+    return (rs, z)
 
-    plt.imshow(arr, cmap=plt.cm.hot, vmin=0, vmax=1)
-    plt.savefig("opt.png")
+def mangel(pre, pim, T, l, savez):
+    """
+    Calculate the mangelbrot image
+    (pre, pim) discribes the image size. Use T and l to tune the mangelbrot
+    This function uses the global variables limitre and limitim to determine
+    the c-mesh range.
 
-    print(f"Took {end - start} seconds")
+    :param pre: Number of real numbers used
+    :param pim: Number of imaginary numbers
+    :param T: Mangelbrot threshold
+    :param l: Iterations
+    :param savez: Return z as the second element of returned tuple
+    """
+
+    # Used to calculate c-mesh
+    re = np.linspace(limitre[0], limitre[1], pre)
+    im = np.linspace(limitim[0], limitim[1], pim)
+
+    # Calculate c-mesh
+    grid = np.add.outer(re, 1j * im)
+
+    # Calculate ι
+    return numpyiota(grid, T, l, savez)

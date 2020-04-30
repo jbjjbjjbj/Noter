@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import numpy as np
 import matplotlib.pyplot as plt
 import time
@@ -7,9 +6,10 @@ import time
 limitre = ( -2, 1 )
 limitim = ( -1.5, 1.5 )
 
-def lota(c, T, l):
+def iota(c, T, l):
     """
     Implement the ι function used in mangelbrot
+    Also devides by l
 
     :param c: Complex number from the c-mesh
     :param T: Mangelbrot threshold
@@ -22,12 +22,12 @@ def lota(c, T, l):
 
         # Check if we found or z
         if np.abs(z) > T:
-            return i
+            return (i / l, z)
 
     # If we did not find z, use l
-    return l
+    return (l / l, z)
 
-def mangel(pre, pim, T, l):
+def mangel(pre, pim, T, l, savez):
     """
     Calculate the mangelbrot image
     (pre, pim) discribes the image size. Use T and l to tune the mangelbrot
@@ -38,10 +38,12 @@ def mangel(pre, pim, T, l):
     :param pim: Number of imaginary numbers
     :param T: Mangelbrot threshold
     :param l: Iterations
+    :param savez: Return z as the second element of returned tuple
     """
     
     # Preallocate result array
     rs = np.zeros((pre, pim))
+    z = np.empty((pre, pim), dtype=complex)
 
     # Calculate scaling variables
     sre = ( limitre[1] - limitre[0] ) / (pre-1)
@@ -54,17 +56,9 @@ def mangel(pre, pim, T, l):
             c = limitre[0] + limitim[0] * 1j + sre * re + 1j * sim * im
             
             # Calculate the ι
-            rs[re,im] = lota(c, T, l) / l
+            (rs[re,im], z[re, im]) = iota(c, T, l)
 
-    return rs
-
-
-start = time.time()
-arr = mangel(500, 500, 2, 100)
-end = time.time()
-
-plt.imshow(arr, cmap=plt.cm.hot, vmin=0, vmax=1)
-plt.savefig("test.png")
-plt.savefig("test.pdf")
-
-print(f"Took {end - start} seconds")
+    if savez:
+        return (rs, z)
+    else:
+        return (rs, None)
