@@ -1,0 +1,188 @@
+:stem:
+
+== J1 module 1
+
+____
+Show code and explain for 1,4,5,6 (design and impl ISR, time based
+debouncing, tick routing, limitations)
+____
+
+TODO med arduino. Og debouncer.
+
+=== Noter
+
+Findes forskellige slags realtime afhængig af hvor vigtigt det er at man
+laver sin opgave inden for deadline.
+
+* *Hard* er når en manglende deadline tæller som en system fejl.
+* *Firm* nogle deadlines på gerne misses, men disse resultater vil være
+ubrugelige.
+* *Soft* et resultat er ikke nær så meget værd hvis det er forsent, men
+kan stadig bruges.
+
+== H1 module 2
+
+____
+Exercise 1-11
+____
+
+See ../emb_m2/emb_m2.ino
+
+TODO med arduino
+
+=== Noter
+
+*Q-format* er hver man dedikere nogle af bits til decimaler. Det er
+derfor ikke _floating_ point.
+
+*Floating points* er decimal tak med en floating point. Her har man kun
+et bestemt tal betydende cifre.
+
+TODO læs op på error calculus. Totalt uforståeligt i slides.
+
+Der findes forskellige måder at have negative tal på.
+
+* Signed Her bruger man MSB til at betyde sign. Når den er 1 er det et
+minutal. Problemet er at der nu er 2 nuller.
+* 1’s komplement Ligesom _signed_ men når det er negativt er alle bits
+flippet. Dette gør det meget lettere at lave matematik på det. Her er
+stadig det problem at der er 2 nuller.
+* 2’s komplement Ligesom _1.s komplement_ men negative har 1 lagt til.
+Dette betyder at der kun er 1 nul værdi.
+
+== H2 module 3
+
+____
+Exercise 4-7
+____
+
+TODO lav det her på arduino.
+
+=== Noter
+
+To forskellige hoved protokoller.
+
+* ASCII Let at læse at læse for en person. Det er nemmere at seperere
+felter. Bare ikke særlig efficient.
+* Binary Inviklet af seperere felter, da data felter kan indeholder
+delimiters. Mere efficient.
+
+Findes fire forskellige structurelle elementer.
+
+* Sequence Flere elementer efter hinnanden.
+* Alternation Enten den ene eller anden type element.
+* Repetition Lister af det samme elemtn
+* Abstraction Structure og egne data typer.
+
+*Haming distance* er hvor mange bits er forskellige mellem to bit
+sekvenser.
+
+*Haming distance of protection code* hvor langt der er imellem to
+sekvenser der stadig er korrekte. Dette kan man kande for _HD_.
+
+* Hvis _HD_ er større end _n_ kan man detect _n_ bit errors.
+* Hvis _HD_ er større end _2n_ kan man fixe _n_ bit errors.
+
+Fletcher _HD_ er 2 så man kan detect en bit fejl.
+
+== J2 module 4
+
+____
+Show LED13 blink code and explain program.
+____
+
+____
+Explain interrupt
+____
+
+____
+Lack of control maybe bq of non-interruptable ISRs
+____
+
+____
+Procesmodel: running,ready,blocked
+____
+
+____
+semaphore wait and signal
+____
+
+== J3 module 5
+
+____
+What is a semaphore, show code from above and eplaing critical region
+setup
+____
+
+== J4 module 6
+
+____
+Show code for and explain message queues as a buffering tool.
+____
+
+== J5 module 6.5
+
+____
+Exercise 1 in part3 on page295 (Pdf is on moodle)
+____
+
+== H3 module 7
+
+____
+Exercise 4-5
+____
+
+Se ./M7opg.md
+
+TODO lav arduino opgaver. TODO lav måske lidt flere af opgaverne.
+
+=== Noter
+
+*Scheduling* er når flere opgaver eller jobs skal time shares på en CPU.
+Et *Schedule* er plan for hvordan disse opgaver skal have tid. Et
+schedule er *feasable* hvis alle jobs kan køres imellem deres readytime
+og deadline.
+
+Der findes forskellige kategorier.
+
+* Fixed schedules Jobs kører på tidspunkter man har bestemt for forhånd.
+Og dette kører bare i loop. Dette er ret simpelt og effektivt men ikke
+særlig fleksibelt.
++
+Her behøver man kun lave en plan hen til LCM eller Least Common Multiple
+af tasks periods.
+* Round robin Fixed tidsrum er delt ud mellem jobs periodisk. Simpelt og
+fleksiblet men ikke effekttivt.
+* Fixed priority Det er altid jobbet med højeste prioritet der kører.
+Dette er simpelt og fleksibelt, men kun middelt effektivt.
+* Dynamic priority Her bruger man andre regler til at bestemme hvem der
+kører. Dette giver de bedste resultater men er også mere komplekst.
+
+Utilization er _completion time_ dividere med _period_. Man kan definere
+CPU utilization som:
+
+stem:[U = \sum_{i=1}^N \frac{c_i}{T_i}]
+
+_Rate Monotonic Scheduling_ eller *RMA* er når man giver task med lav
+periode højere prioritet.
+
+_Deadline Monotonic_ eller *DMA* sortere efter laveste relative
+deadline. Dette giver det samme som RMA hvis relative deadlines er lig
+periode. Hvis deadline er før periode giver den optimale resultater.
+
+_Utilization critereon_ er en upper limit stem:[\overline{U}] for
+utilization hvor RMA er garanteret hvis deadlines er lig periode.
+
+stem:[\overline{U} = N \cdot (2^{\frac{1}{N}} - 1)]
+
+== H4 module 8
+
+____
+Exercise 1-2
+____
+
+== H5 module 9
+
+____
+All exercises
+____
