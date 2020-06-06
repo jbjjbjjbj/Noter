@@ -15,3 +15,21 @@ schedulability criterion.
 ____
 _Does utilization guarantee feasibility of an RMA schedule?_
 ____
+
+Ved at køre RMA fra 0 til 400, kan man se at der er schedulable.
+
+
+
+Først regner jeg utilization ud.
+
+----
+U = 20/50 + 20/80 = 0.65
+----
+
+Derefter kan man regne utilization critereon ud.
+
+----
+\overline{U} = 2 * (2^(1/2) - 1) = 0.82
+----
+
+Her kan man garantere at RMA er schedulable.

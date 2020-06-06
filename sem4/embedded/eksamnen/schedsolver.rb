@@ -78,12 +78,14 @@ class Scheduler
     curtask = nextTask(index)
     new = {:task => curtask, :remain => []}
     @tasks.each_with_index do |task, i|
+      # Check for deadline miss
+      intoperiod = index % task[:period]
+      if intoperiod >= task[:deadline] && @states.last[:remain][i] > 0
+        puts "Deadline missed in task #{i}"
+        exit
+      end
       # Check if start of new period
       if index % task[:period] == 0
-        if @states.last and @states.last[:remain][i] > 0
-          puts "Deadline missed in task #{i}"
-          exit
-        end
         new[:remain] << task[:complete]
       else
         new[:remain] << @states.last[:remain][i]
