@@ -1,0 +1,17 @@
+== Opgaver til modul 7
+
+=== Opgave 4
+
+Given a taskset:T1=50,c1=20,d1=60,T2=80,c2=20,d2=50(mS)
+
+. Does utilization guarantee feasibility of an RMA schedule ?
+. Validate an RMA schedule with the exact schedulability criterion.
+. What is the optimal fixed priority schedule ?
+. Validate the optimal fixed priority schedule with the exact
+schedulability criterion.
+
+==== Løsning
+
+____
+_Does utilization guarantee feasibility of an RMA schedule?_
+____
