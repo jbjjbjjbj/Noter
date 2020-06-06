@@ -132,7 +132,7 @@ ____
 Exercise 4-5
 ____
 
-Se ./M7opg.md
+Se ./M7opg.adoc
 
 TODO lav arduino opgaver. TODO lav måske lidt flere af opgaverne.
 
