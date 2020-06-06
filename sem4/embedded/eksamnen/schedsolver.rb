@@ -3,10 +3,15 @@
 require 'optparse'
 
 class Scheduler
-  def initialize(tasks)
+  def initialize()
     @states = []
+    @tasks = []
+  end
+
+  def loadtasks(tasks)
     @tasks = tasks
   end
+
 
   def printHeader()
     print "i".ljust(4, ' ')
@@ -100,7 +105,7 @@ class Scheduler
     return new
   end
 
-  def run()
+  def run(runtil=nil)
     printHeader()
 
     # Run LCM times
@@ -114,6 +119,9 @@ class Scheduler
 
       printState(i, new)
 
+      if runtil && new[:remain][runtil] == 0
+        break
+      end
     end
   end
 end
@@ -138,6 +146,25 @@ def taskFromString(str)
   return task
 end
 
+class FixedSched < Scheduler
+  alias_method :parent_init, :initialize
+  def initialize(priorities)
+    @priorities = priorities
+
+    parent_init
+  end
+
+  def nextTask(index)
+    @priorities.each do |taskid|
+      if !@states.last or @states.last[:remain][taskid] > 0
+        return taskid
+      end
+    end
+
+    return nil
+  end
+end
+
 class RmaSched < Scheduler
   def nextTask(index)
     smallestTask = nil
@@ -158,6 +185,17 @@ options = {}
 OptionParser.new do |opts|
   opts.on("-f", "--taskfile FILE", "Load tasks from FILE") do |f|
     options[:taskfile] = f
+  end
+  opts.on("--until-done TASK", "Run until TASK finishes") do |task|
+    options[:runtil] = Integer(task)
+  end
+  opts.on("--sched-rma", "Schedule using rma") do
+    options[:sched] = RmaSched.new()
+  end
+  opts.on("--sched-fixed PRIO", "Schedule using fixed priority list PRIO") do |prio|
+    prio = prio.split(",")
+    prio.map! {|p| Integer(p) }
+    options[:sched] = FixedSched.new(prio)
   end
 end.parse!
 
@@ -183,5 +221,11 @@ end
 
 puts tasks.inspect
 
-sch = RmaSched.new(tasks)
-sch.run()
+sch = nil
+if options[:sched]
+  sch = options[:sched]
+else
+  sch = Scheduler.new()
+end
+sch.loadtasks(tasks)
+sch.run(options[:runtil])
