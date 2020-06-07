@@ -226,3 +226,32 @@ Derfor bruger man _Static Ressource Priority Ordering_ hvor man bruger prioritie
 ____
 All exercises
 ____
+
+Se ./M9opg.adoc
+
+=== Noter
+
+Er *System* kan deles ind i *subsystemer* som igen kan deles ind i *objects*.
+
+_Subsystems_ deler de forskellige *terminators* op, hvor en termiator er noget
+der snakker med omverdenen.
+
+Et subsystem kan være en server hvilket betyder at den ikke selv laver request,
+men kun modtager.
+
+_Objekter_ kan have forskellige typer:
+
+- IO
+- User role
+- Control
+- Data abstraction
+- Algorithm
+
+Man kan forklare et subsystems opførsel med *STD*(State Transistion Diagram).
+
+Når man laver et event kan det gøres på forskellige måder.
+
+Triggering:: Sender en commando som man derefter venter på (blocking).
+Enabling:: Sender en commando som bliver startet i baggrunden (unblocking).
+Disabling:: Stop en commando der blev enabled.
+
