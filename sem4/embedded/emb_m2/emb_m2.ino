@@ -55,15 +55,19 @@ double sine(double x) {
 	// Works by finding value in specific -pi/2 to pi/2 period.
 	int period = x / TAU;
 
+	// Remember to multiply with sign
+	int sign = x < 0 ? -1 : 1;
+
 	// One cycle of sin takes 4 periods.
 	// If 0 just return the sine approx x
 	// If 1 do negative sine approx on x - TAU
 	// If 2 do negative sine approx x
 	// If 3 do sine approx on period x - TAU
-	x = abs(x - TAU*period);
+	x = abs(x) - abs(TAU*period);
 
 	double res = 12;
 	
+    Serial.print("Period "); Serial.println(abs(period % 4));
 	switch( abs(period % 4) ) {
 		case 0:
 			res = sineTayler(x, TAYLORN);
@@ -78,8 +82,6 @@ double sine(double x) {
 			res = sineTayler(x - TAU, TAYLORN);
 			break;
 	}
-	// Remember to multiply with sign
-	int sign = period < 0 ? -1 : 1;
 
 	// Should never return because all cases are handled
 	return res * sign;
@@ -210,21 +212,42 @@ void setup() {
 	NEXT_OPG(opg_count);
 	// OPG11. Impl sine
 	// Hardest value should be TAU as it's the furthest from center.
-	unsigned long begin = micros();
-	double res = sine(TAU);
-	unsigned long time1 = micros() - begin;
-	Serial.print("own sin : "); Serial.println(res, PRINT_PRECISION);
+#define STEPS 100
+    double start = -100;
+    double end = 100;
+    double step = (end - start) / (STEPS-1);
+    unsigned long owntotaltime = 0;
+    unsigned long ardtotaltime = 0;
+    double totalerror = 0;
+    for (int i = 0; i < STEPS; i++) {
+        Serial.print("\n\nInput: "); Serial.println(start, PRINT_PRECISION);
 
-	begin = micros();
-	double correct = sin(TAU);
-	unsigned long time2 = micros() - begin;
-	Serial.print("ard sin : "); Serial.println(correct, PRINT_PRECISION);
+        unsigned long begin = micros();
+        double res = sine(start);
+        unsigned long time1 = micros() - begin;
+        Serial.print("own sin : "); Serial.println(res, PRINT_PRECISION);
 
-	double error = correct ? abs(correct - res) / abs(correct) : 0;
-	Serial.print("rel err : "); Serial.println(error, PRINT_PRECISION);
+        begin = micros();
+        double correct = sin(start);
+        unsigned long time2 = micros() - begin;
+        Serial.print("ard sin : "); Serial.println(correct, PRINT_PRECISION);
 
-	Serial.print("\nown time: "); Serial.println(time1);
-	Serial.print("ard time: "); Serial.println(time2);
+        double error = correct ? abs(correct - res) / abs(correct) : 0;
+        Serial.print("rel err : "); Serial.println(error, PRINT_PRECISION);
+
+        Serial.print("own time: "); Serial.println(time1);
+        Serial.print("ard time: "); Serial.println(time2);
+
+        owntotaltime += time1;
+        ardtotaltime += time2;
+        totalerror += error;
+
+        start += step;
+    }
+    Serial.println("\n\nTOTAL STATS");
+    Serial.print("rel err : "); Serial.println(totalerror / STEPS, PRINT_PRECISION);
+    Serial.print("own time: "); Serial.println(owntotaltime / STEPS);
+    Serial.print("ard time: "); Serial.println(ardtotaltime / STEPS);
 
 }
 

@@ -9,6 +9,69 @@ ____
 
 TODO med arduino. Og debouncer.
 
+== Opgave løsning
+
+____
+_Design and implement an interrupt service routine which acts on digital pin 2._
+____
+
+Digital pin 2 i arduino er mapped til atmega328p pin PD2, og er koblet på INT0.
+Derfor starter vi med at enable INT0.
+
+Se for kode ../m1/int/int.ino
+
+----
+EIMSK |= 1 << INT0;
+----
+
+Derefter kan man lave en interrupt der trigger på rising edge, hvilket man ud
+fra datasheet kan se er ISC01 og ISC00 i EICRAfor INT0.
+
+----
+EICRA |= (1 << ISC01) | (1 << ISC00);
+----
+
+Hvis man har sat den rigtige pinmode på 2, vil interrupten nu være aktiveret.
+
+----
+ISR(INT0_vect) {
+    do_the_thing();
+}
+----
+
+Her bruger jeg en normal ISR, hvor gcc håndtere det med at push registre på
+stakken og sætte dem tilbage igen efter.
+
+Dette kan man også se i den compilede fil.
+
+image::M1f1.png[]
+
+____
+_Or add a timed decision in ISR to prevent more ISR response for the nex xx mseconds._
+____
+
+Dette er gjort ved at gemme tiden for hver gang den kører med millis.
+Derefter kan man check om det er over 100 ms siden at man sidst kørte.
+
+____
+_Design a tick routing which can run a function on given times (and explain code below_
+____
+
+Har lavet en function man kalder for hver tasks man vil tick route.
+Denne bruger millis() funktionen som bagved bruger timer0.
+
+____
+_What is limitations ? like timewise  starvation,..._
+____
+
+Man kan tydelig se problemet hvis man sætter task0 til at have et 10000 ms langt
+delay.
+
+Her vil man se starvation i at det hele bliver langsomere.
+
+Dette er fordi det ikke er preimtive hvilket betyder at hvis et job bare tager lang
+tid må de andre bare vente.
+
 === Noter
 
 Findes forskellige slags realtime afhængig af hvor vigtigt det er at man
@@ -26,9 +89,56 @@ ____
 Exercise 1-11
 ____
 
+=== Løsning
+
 See ../emb_m2/emb_m2.ino
 
-TODO med arduino
+____
+_Compute the mean relative error between da and mda_
+____
+
+0.0052564806 hvilket er okay for at den kun er 16 bit.
+
+____
+_Compute the mean relative error between da2 and mda2_
+____
+
+0.1998619556 her kan man se at fejlen stiger en del.
+
+____
+_Iterate "a*=da[i];" over the length of da and measure the execution time (micros())_
+____
+
+Exe time: 1272
+
+____
+_Iterate "mult_float(&f1,&mda[i],&f); memcpy(&f1,&f,2);" over the length of mda and measure the execution time_
+____
+
+Exe time: 828
+
+____
+_Compute the relative difference between results from (7) and (9)_
+____
+
+----
+Abs diff: 444
+Rel diff: 0.35
+----
+
+____
+_Implement the fastest version of the trigornometric function "sine" that has below 2% relative error._
+____
+
+Her brugte jeg tayler til at exporimere sin(x).
+Dette blev ret præcis men var meget langsomere end sin(x).
+
+----
+TOTAL STATS
+rel err : 0.0005467962
+own time: 2420
+ard time: 134
+----
 
 === Noter
 
@@ -56,7 +166,48 @@ ____
 Exercise 4-7
 ____
 
-TODO lav det her på arduino.
+=== Løsning
+
+Her har jeg lavet noget test data med to beskeder, dette løser den ret godt.
+
+Jeg bruger bare uint8_t til de to først typer.
+
+Se ../m3/m3.ino
+
+----
+DONE
+Type            :1
+Recvid          :514
+Transducerlevel :88
+Quiettime       :50
+Masters         :1
+
+MASTER: 0
+    rssi        :90
+    txid        :5
+    ixidtime    :600
+DONE
+Type            :65
+Recvid          :1
+Transducerlevel :136
+Quiettime       :16
+Masters         :3
+
+MASTER: 0
+    rssi        :23
+    txid        :68
+    ixidtime    :65535
+
+MASTER: 1
+    rssi        :11
+    txid        :171
+    ixidtime    :65534
+
+MASTER: 2
+    rssi        :3
+    txid        :64
+    ixidtime    :65535
+----
 
 === Noter
 
@@ -91,9 +242,14 @@ ____
 Show LED13 blink code and explain program.
 ____
 
+Se ../emb_m4/emb_m4.ino
+
 ____
 Explain interrupt
 ____
+
+Se ../emb_m4/jrnl/jrnl.ino
+Se ../m1/int/int.ino
 
 ____
 Lack of control maybe bq of non-interruptable ISRs
@@ -103,9 +259,26 @@ ____
 Procesmodel: running,ready,blocked
 ____
 
+Man kan se at processorne bruger k_sleep, hvilket gør dem blocked.
+Når de er færdige med at sleep kommer de i ready, og når de så bliver scheduled
+kommer de i running.
+
 ____
 semaphore wait and signal
 ____
+
+Dette kan man bruge til forskellige ting.
+
+Critical region::
+    Man har noget kode der tilgår noget data.
+    Dette kan man låse ved at lave en semafor med en start værdi på 1.
+    Når nogen låser den tager de den værdi.
+Periodisk timing::
+    Man kan sætte os til at signal ens semafor hvert x sekundt.
+    Her giver man start værdi 0.
+Timing og beskeder::
+    Det er en god måde at synkronisere forskellige task.
+    For eksempel kan en ISR sætte en semafor for at signalere at der er en ny besked.
 
 == J3 module 5
 
@@ -114,11 +287,15 @@ What is a semaphore, show code from above and eplaing critical region
 setup
 ____
 
+Se ../m5/m5.ino
+
 == J4 module 6
 
 ____
 Show code for and explain message queues as a buffering tool.
 ____
+
+Se ../m6/m6.ino
 
 == J5 module 6.5
 

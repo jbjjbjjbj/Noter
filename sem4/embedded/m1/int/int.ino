@@ -4,19 +4,21 @@
 #define DEBOUNCE 1
 
 ISR(INT0_vect) {
-	static bool state = 0;
+    static unsigned long last = 0;
+
+    unsigned long now = millis();
+    if (now - last < 100) {
+        return;
+    }
+    last = now;
+
+	static unsigned char state = 0;
 
 	// Toggle LEDPIN
-	digitalWrite(LEDPIN, state);
-	state = !state;
+	digitalWrite(LEDPIN, state % 2 == 0);
+	state++;
+    Serial.print("Hej "); Serial.println(state);
 
-	/*
-	for(long i = 0; i < 1000; i++) {
-		Serial.print("Hej ");
-		Serial.println(i);
-
-	}
-	*/
 }
 
 void setup() {

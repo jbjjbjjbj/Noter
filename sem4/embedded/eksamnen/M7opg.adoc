@@ -16,21 +16,8 @@ ____
 _Does utilization guarantee feasibility of an RMA schedule?_
 ____
 
-
-Først regner jeg utilization ud.
-
-----
-U = 20/50 + 20/80 = 0.65
-----
-
-Derefter kan man regne utilization critereon ud.
-
-----
-\overline{U} = 2 * (2^(1/2) - 1) = 0.82
-----
-
-Her kan man garantere at RMA er schedulable.
-
+Nej det kan man ikke.
+Hvis deadlines havde været samme som periode kunne man regne stem:[\overline{U}] ud.
 ____
 _Validate an RMA schedule with the exact schedulability criterion._
 ____

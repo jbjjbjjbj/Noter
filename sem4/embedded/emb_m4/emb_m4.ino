@@ -7,8 +7,9 @@ char stk2[STACK];
 struct k_t *tsk1, *tsk2;
 
 void f1() {
-	for(;;) {
-		Serial.println("Haha");
+	for(int i = 0;;i++) {
+		Serial.println(i);
+        k_sleep(400);
 	}
 }
 void f2() {
@@ -16,7 +17,7 @@ void f2() {
 	for(;;) {
 		digitalWrite(13, state);
 		state = !state;
-		k_sleep(1000);
+		k_sleep(100);
 	}
 }
 
