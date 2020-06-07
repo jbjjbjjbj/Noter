@@ -181,6 +181,46 @@ ____
 Exercise 1-2
 ____
 
+Se ./M8opg.adoc
+
+TODO lav arduino ting
+
+=== Noter
+
+_Earliest Deadline First_ eller *EDF* er hvor man tager den med deadline der er
+tættest på _t_.
+
+Dette gør man dynamisk hvilket giver en højere runtime cost end en fixed priority såsom *DMA*.
+
+_Hvis man kan finde et feasable schedule er *EDF* også feasable._
+
+_Hvis deadlines er lig perioder er taskset schedulable med *EDF* hvis stem:[U \leq 1]._
+Dette kaldes også for *utilization criterion.
+
+*Priority Ceiling*, er hvis en task stem:[\tau] prøver at lock en locked task, arver stem:[\tau{}_l] prioriteten.
+Her er det først når en højere task prøver at lock at den lavere task arver.
+
+Dette har forskellige egenskaber, hvis man kan garantere at alle task laver nested locking.
+
+- No deadlocks possible
+- En task venter max duration af critical region for lavere task.
+
+*Immediate Ceiling* er mere leightweight, da man istedet siger at hvis en task
+locker en lock, vil den arve den højst mulige potentielle perioritet.
+Også selvom der ikke er nogen der venter på den.
+
+Denne har samme egenskaber men behøver ikke lige så meget overhead.
+
+I et non-preemtive system, vil dette ikke betyde så meget, da ressources bliver
+unlocked igen i execution perioden for en task.
+
+Hvis man har _round_robin_, _static_ eller _dynamic_ scheduling er der ikke nogle prioriteter man kan bruge.
+Derfor bruger man _Static Ressource Priority Ordering_ hvor man bruger priorities når der sker ressource locking.
+
+- Hvis man bruger _static priority_ bestemmer man STPO før.
+- Hvis man bruger _round robin_ her kigger man på worsk case analysis.
+- Hvis man bruger _EDF_ her det svært at lave analysis.
+
 == H5 module 9
 
 ____

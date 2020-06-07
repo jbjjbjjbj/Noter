@@ -28,7 +28,7 @@ class Scheduler
   end
 
   def printState(index, state)
-    print index.to_s().ljust(4, ' ')
+    print (index).to_s().ljust(4, ' ')
     @tasks.length.times do |i|
       print state[:task] == i ? "|" : " "
       print " "*3
@@ -80,7 +80,11 @@ class Scheduler
   end
 
   def calcNextState(index)
-    curtask = nextTask(index)
+    curtask = nil
+    # We should not run at the begining
+    if index > 0
+      curtask = nextTask(index)
+    end
     new = {:task => curtask, :remain => []}
     @tasks.each_with_index do |task, i|
       # Check for deadline miss
@@ -105,23 +109,34 @@ class Scheduler
     return new
   end
 
-  def run(runtil=nil)
+  def runtiltask(task)
     printHeader()
-
-    # Run LCM times
-    lcm = @tasks[0][:period]
-    @tasks.drop(1).each do |task|
-      lcm = task[:period].lcm(lcm)
-    end
-    (0..lcm).each do |i|
+    (0..).step do |i|
       new = calcNextState(i)
       @states << new
 
       printState(i, new)
 
-      if runtil && new[:remain][runtil] == 0
+      if new[:remain][task] == 0
         break
       end
+    end
+  end
+
+  def run(runtil = nil)
+    if !runtil
+      # Run LCM times
+      runtil = @tasks[0][:period]
+      @tasks.drop(1).each do |task|
+        runtil = task[:period].lcm(runtil)
+      end
+    end
+
+    runtil.times do |i|
+      new = calcNextState(i)
+      @states << new
+
+      printState(i, new)
     end
   end
 end
@@ -181,16 +196,44 @@ class RmaSched < Scheduler
   end
 end
 
+class EdfSched < Scheduler
+  def nextTask(index)
+    smallestTask = nil
+    closestDead = nil
+
+    @tasks.each_with_index do |task, i|
+      if @states.last and @states.last[:remain][i] == 0
+        next
+      end
+
+      deadline = task[:deadline] - (index % task[:period])
+
+      if !smallestTask or deadline < closestDead
+        smallestTask = i
+        closestDead = deadline
+      end
+    end
+
+    return smallestTask
+  end
+end
+
 options = {}
 OptionParser.new do |opts|
   opts.on("-f", "--taskfile FILE", "Load tasks from FILE") do |f|
     options[:taskfile] = f
   end
   opts.on("--until-done TASK", "Run until TASK finishes") do |task|
-    options[:runtil] = Integer(task)
+    options[:runtiltask] = Integer(task)
+  end
+  opts.on("--until TIME", "Run til specified time") do |time|
+    options[:runtil] = Integer(time)
   end
   opts.on("--sched-rma", "Schedule using rma") do
     options[:sched] = RmaSched.new()
+  end
+  opts.on("--sched-edf", "Schedule using edf") do
+    options[:sched] = EdfSched.new()
   end
   opts.on("--sched-fixed PRIO", "Schedule using fixed priority list PRIO") do |prio|
     prio = prio.split(",")
@@ -228,4 +271,9 @@ else
   sch = Scheduler.new()
 end
 sch.loadtasks(tasks)
-sch.run(options[:runtil])
+
+if options[:runtiltask]
+  sch.runtiltask(options[:runtiltask])
+else
+  sch.run(options[:runtil])
+end
