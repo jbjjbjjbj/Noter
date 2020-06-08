@@ -47,3 +47,13 @@ Eftersom de begge har en complete tid på 20 vil de altid ende på t=40.
 Dette er helt fint i begge tilfælde da ingen af dem har deadline inden 40.
 
 
+=== Opgave 5
+
+
+Implement the example of ex. 4 in JDN's kernel (krnl) on Arduino.
+Measure computation time of task1 with an oscilloscope/logic analyser.
+Measure the time between ready and scheduling instant with oscilloscope/logic analyser.
+Measure the time between ready and completion instant with oscilloscope/logic analyser.
+
+
+=== Løsning

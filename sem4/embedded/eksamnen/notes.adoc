@@ -7,7 +7,8 @@ Show code and explain for 1,4,5,6 (design and impl ISR, time based
 debouncing, tick routing, limitations)
 ____
 
-TODO med arduino. Og debouncer.
+Se ../m1/int/int.ino.
+Se ../m1/router/router.ino.
 
 == Opgave løsning
 
@@ -303,6 +304,86 @@ ____
 Exercise 1 in part3 on page295 (Pdf is on moodle)
 ____
 
+=== Løsning
+
+____
+_Evaluate the timing requirements of the system_
+____
+
+Det er vigtigt at beskederne mellem sensor og DAC kommer ordenligt igennem.
+Derfor er de dele realtime, mens keypad, display og serial er firm-realtime.
+Det er ikke soft da det stadig er vigtigt for piloten at det han får at vide er rigtigt
+og at hans kommandoer sker hurtigt, men ikke så vigtigt som DAC.
+
+____
+_Define the major software functions to be carried out by the system as a set of
+software subsystems._
+____
+
+User interface::
+    Handles display and keyboard, and gets information from info subsystem.
+    This handles IO with the display and takes input from the user via keypad.
+Info subsystem::
+    Collect information sent from CPU and sends this on serial IO and User interface.
+    It therefore handles the serial IO terminator.
+Processing submodule::
+    Receives updates from sensor and adc, processes the data and sends it to DAC and Info system.
+    Updates to the info system are done non-blocking and because it's only firm
+    updates are okay to not be sent.
+    Updates to DAC are blocking and must be done before the deadline.
+
+____
+_Show all information flow, both between subsystems and to/from IO devices._
+____
+
+Har lavet er på plantuml.
+
+image::M65f1.png[]
+
+----
+@startuml
+component [User Interface] as UI
+component [Info subsystem] as IS
+component [Processing submodule] as PS
+
+interface Keypad
+interface Display
+interface DAC
+interface "Serial IO" as SIO
+interface ADC
+interface CPU
+
+UI -left- Keypad
+UI -right-> Display
+IS -up-> UI
+UI -down-> PS
+
+IS -> SIO
+PS -right-> IS
+ADC -up-> PS
+PS -down- CPU
+PS -down-> DAC
+@enduml
+----
+
+____
+_How would you design the software if all the code had to be contained within a
+single sequential program._
+____
+
+Her ville jeg lave en slags tick router og sørre for at alle task kører super hurtigt.
+For eksempel skulle user interface måske have mere swithing inde i sig selv.
+
+____
+_Redesign the software assuming that interrupt-driven activities are allowed._
+____
+
+Interrupt giver mulighed for at køre OS og preimetive multitasking.
+Jeg vil have hvert subsystem i en task, som så kører med forskellig hastighed.
+
+Hvis sensor kommer apriodisk ville det nok være smart at have en interrupt dertil,
+samt en til keypad.
+
 == H3 module 7
 
 ____
@@ -310,8 +391,6 @@ Exercise 4-5
 ____
 
 Se ./M7opg.adoc
-
-TODO lav arduino opgaver. TODO lav måske lidt flere af opgaverne.
 
 === Noter
 

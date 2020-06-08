@@ -1,4 +1,5 @@
 = Opgaver til gang 8
+:stem:
 
 == Opgave 1
 
