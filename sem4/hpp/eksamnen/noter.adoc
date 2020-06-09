@@ -1,0 +1,204 @@
+= Noter til Numerical Scientific Computing
+:stem:
+
+== M1
+
+Forskellige slags computational units.
+
+CPU::
+Mindre cores der er meget mere avanceret.
+MCU::
+Mange cores, med x86.
+GPU::
+Rigtig mange cores, som er coplet sammen i en matrix.
+De kan derfor kun gøre den samme ting alle sammen.
+Dette betyder at de er rigtig gode til matrix udregninger.
++
+Virker som en coprocessor.
+
+Når man har flere cores er der et problem med memory.
+NUMA bliver her brugt og det betyder at en core har en del memory der er hurtigt
+for den men langsomt for de andre.
+
+== M4 parallel computing
+
+Forskellige former for at køre kode på:
+
+SISD::
+_Single Instruction Single Data_.
+Her kører man mere data sekvenselt med det samme kode.
+SIMD::
+_Single Instruction Multiple Data_.
+Her køre man en funktion flere gange sammentidigt med forskelligt data.
+Her bliver hver processor nødt til at køre samme instruktion ligesom ved GPU.
+MIMD::
+_Multiple Instruction Multiple Data_.
+Man kører flere funktioner på forskelig data.
++
+Dette kan enten være synkront eller asynkront, men den langsomeste instruction
+er den der bestemmer runtime.
++
+[horizontal]
+SPMD::: _Single Program Multiple Data_.
+Kører samme funktionalitet på flere forskellige dataset.
+Ligesom *SIMD* men uden samme synkronisering.
++
+Python: `multiprocessing.map_async`
+
++
+MPMD::: _Multiple Program Multiple Data_.
+Hedder også task-parallel computing.
++
+Python: `multiprocessing.apply_async`
+
+_Summetric multiprocessing_ eller *SMP* er når man har flere processereder deler memory.
+Dette er det de fleste computere gør idag.
+
+_Distributed memory_ er når hver processor har eget memory, som ved clusters etc.
+Her er det dyrt at dele data mellem de forskellige processor da det skal sendes.
+
+_Map-reduce_ eller Hadoop er hvor man mapper data ud på en funktion og derefter
+samler resultater i en liste.
+
+Fordelen ved at bruge flere processorer kan regnes ud som, hvis man følger *Amdahl's law*:
+
+stem:[S_a(M,s_a) = \frac{M}{(M-1) \cdot s_a) + 1}]
+
+Her er stem:[M] antal processorer og stem:[s_a] fractionen af hver meget der ikke kan
+paralleliseret.
+
+Hvis man i stedet bruger *Gustafson-Barsis law* hvor man siger at med flere processorer,
+lader man også problem size stige får man:
+
+stem:[S_{gb}(s_{gb}, M) = M + (1 - M) * s_{gb}]
+
+Her kan man se at er lineær, hvilket betyder at man bliver ved at med at have fordel af flere processorer.
+
+Dette går ud fra at stem:[s_{gb}] ikke ændrer sig med problem size.
+For eksempel når man laver matrix matrix multiplication er der forskellige regler
+med hvilken lov man skal bruge.
+
+*Se mere sammenligning af love på slide 39.*
+
+== M7 Distributed computing
+
+Køre et program på flere forskellige computere som ikke deler memory eller noget andet.
+
+Her er der flere forskellige challenges.
+
+* Distributed memory
++
+Hvordan skal man dele hukommelse med de forskellige nodes, når hver node har sin
+egen version.
+Og hvordan sørger man for at de er opdateret.
+Dette kommer ned til to egenskaber.
+** Cost of communication
+** Consistency
+** Timing
++
+Hvor langt inde er man? Hvordan bliver man enig om tiden.
+
+*Scalability* systemets mulighed for at håndtere en stigning i arbejde.
+Dette kan man måle på forskellige måder.
+
+Performance::
+Hvor meget arbejde bliver der udført sammenligne med hvor mange ressourcer der bliver brugt.
++
+Her kan man kigge på latency som er en af de ting der tit bliver dårligere ved et
+distribueret system.
+
+Availability::
+Hvor tit at man kan bruge systemet.
++
+Her kan et distribueret system være en fordel da det er fordelt ud over flere noder.
+
+
+Der er forskellige måder at fordele data:
+
+Partition::
+Data bliver fordelt, hvilket er smart ved større dataset.
+Men dette kan gøre at der er større krav til communication.
+Replication::
+Giver redundancy, men kræver også meget plads på hver node.
+
+Forskellige timing system models.
+
+Synchronous::
+Alt foregår efter en global tid, og alt sker i den rigtige rækkefølge.
+Dette er let at arbejde med, men er svært at implementere i praktikken.
+Asynchronous::
+Beskeder er forsinket og noder gør ting med forskellige hastigheder.
+Det er nok mere dette man laver i praksis, men det er også sværere at programmere.
+
+*Consensus problem* er om forskellige noder er enige om information.
+Dette står der ting om på side 26.
+Ved asynchronous systemer er der ikke en algoritmer der kan løse consensus, (*FLP* result).
+
+En anden theorem er *CAP* som siger at man kun kan opfylde to af følgende egenskaber.
+
+[horizontal]
+Consistency:: Alle noder ser samme data.
+Availability:: Noder der fejler smadre ikke andre noder.
+Partition tolerance:: Beskeder der bliver tabt er ikke en global system fejl.
+
+Her vælger man tit Availability og Partition tolerance da disse to er vigtige for
+store systemer.
+
+Ved numerical computing er consistency den vigtigste, mens de andre ikke er nær
+så vigtige.
+Dette er fordi alle noder er inden for en enkelt compute cluster og ikke spedt over
+internettet.
+Der er derfor garantier på forbindelse mellem noder.
+
+Hvis man har *total order* kan man sammenligne alle tids elementer, men dette
+er dyrt i forhold til communikation.
+Man kan også have *partial order* hvor der altid vil være værdier man ikke kan sammenligne.
+Det er derfor svært at se om to events kommer efter hinnanden.
+
+Ved timing kan man bruge *Lamport timing* der fungere med countere der bliver incremented
+ved arbejde og sendt til andre nodes. Se side 35.
+
+Man kan også have et *vector clock* hvor man gemmer tiden for alle de andre nodes.
+
+== M9 GPU computing
+
+SIMD hvor man skal køre det samme kode på rigtig meget data.
+Kræver at der ikke sker meget branching da de så skal vente på hinnanden.
+
+En GPU har forskellige dele i forhold til OpenCL modellen.
+
+Host::
+Den der styrer det hele, og dette er tit CPU'en.
+Software configuration på host kalder man *platform*.
+Compute device::
+Dette er tit GPU'en, og en combination af platform og CD kalder man for *context*.
+En CD indeholder flere CU.
+Compute unit::
+Dette er en GPU core og indeholder flere PE.
+Processing element::
+Eller PE, og er den der laver udregningerne.
+
+Disse dele har forskellige memory på forskellige levels.
+
+Global::
+Er hoved hukommelsen i GPU'en og kan ses af alle.
+Er til gengæld ikke nær så hurtigt.
+Constant::
+Mindre og kan ikke ændres.
+Men er hurtigt og kan ses af alle PE.
+Local::
+Delt af alle PE i en CU.
+Dette er hurtigere end overstående og kan bruges til temp data der skal deles.
+Private::
+Ikke mere end et par kilobytes, men er super hurtigt.
+Kan kun ses af hver PE.
+
+I opengl har man *work item* og *work group*.
+Her arbejder man tit på vector eller matrix, og dette mapper ret godt til work item og group.
+Hver element i matrix bliver mapped til en work item.
+
+Her er work item hver PE mens work group er hver CU.
+
+I opencl programmere man hvad der skal ske med hvert element, og ikke loop som
+man kender det.
+Så finder opencl ud af hvordan arbejdet skal fordeles på GPU.
