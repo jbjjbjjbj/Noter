@@ -3,20 +3,21 @@ public class Student extends Person implements Uniperson {
 	private long semester;
 	private String degree;
 
-	private double GPA;
-	private int GPAcount;
+	// GPA stuff
+	private double gradesum;
+	private int gradecount;
 	
 	public Student(String name, short age, String gender, long semester, String degree) {
 		super(name, gender, age);
 		this.semester = semester;
 		this.degree = degree;
-		this.GPA = 0;
-		this.GPAcount = 0;
+		this.gradesum = 0;
+		this.gradecount = 0;
 	}
 	
-	public void addGPA(double GPA) {
-		this.GPA += GPA;
-		this.GPAcount++;
+	public void addGrade(double grade) {
+		this.gradesum += grade;
+		this.gradecount++;
 	}
 
 	public long getSem() {
@@ -27,10 +28,10 @@ public class Student extends Person implements Uniperson {
 		return this.degree;
 	}
 	
-	public double avgGPA() {
-		if (this.GPAcount == 0) {
+	public double getGPA() {
+		if (this.gradecount == 0) {
 			return 0;
 		}
-		return this.GPA / this.GPAcount;
+		return this.gradesum / this.gradecount;
 	}
 }
