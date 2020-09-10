@@ -1,7 +1,7 @@
 # Opgaver til OOP M2
 
 ```
-2020-09-10:oop/mm3/opg/1 #5953/G
+2020-09-10:s5/oop/mm3/opg/1 #f40e/G
 ```
 
 ## Opgave 1 - Usecase diagram

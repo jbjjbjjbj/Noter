@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-# 2020-09-09:sig/mm2/opg/2 #2e2a/G
-# Første del kan findes i #e25f/P.
+# 2020-09-09:s5/sig/mm2/opg/2 #15ad/G
+# Første del kan findes i #7bbd/P.
 
 import matplotlib.pyplot as plt
 import numpy as np
