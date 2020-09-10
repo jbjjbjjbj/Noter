@@ -4,7 +4,7 @@
 2020-09-10:oop/mm3/opg/1 #5953/G
 ```
 
-## Opgave 1
+## Opgave 1 - Usecase diagram
 
 ```plantuml
 left to right direction
@@ -29,6 +29,37 @@ uha --> db
 ura --> db
 ```
 
-## Opgave 2
+## Opgave 2 - Requirements
 
-## Opgave 3
+Functional:
+- Must validate and check user info.
+- Keep track of available space.
+- Store animals.
+- Respect special food requirements.
+
+Usability:
+- Easy to use GUI as it's going to be used by Animal owner.
+
+## Opgave 3 - Domain model
+
+```plantuml
+@startuml
+class "Animal owner" as ao
+ao : offender?
+
+class "Animal" as an
+an : name
+an : race
+
+class "Cage" as cage
+
+class "Reservation" as r
+r : start
+r : end
+
+r "1" -- "*" ao : reserved_by
+r "1" -- "0..1" cage : reserved
+cage "0..1" -- "1" an : stores
+ao "*" -- "1" an : owns
+@enduml
+```
