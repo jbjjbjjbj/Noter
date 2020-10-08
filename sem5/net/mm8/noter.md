@@ -1,24 +1,26 @@
-= Can
+# Can
+```
 2020-10-01:s5/net/mm8/noter/1 #2280
+```
 
 Can lever i layer 1 - 3 i OSI modellen.
 
-== Bus
+## Bus
 
 Requires that a single bit is received by all bus members.
 
 1 is recessive, while 0 is dominant.
 Recessive is the default so pull up and dominant is when the line is pulled down.
 
-....
+```
 0 + 0 = 0
 1 + 1 = 1
 0 + 1 = 0 # Because 0 is dominant
-....
+```
 
 CAN defines 0 as the dominant bit.
 
-== Frame
+## Frame
 
 Node id is also used as priority.
 Smaller id gives a higher priority.
@@ -35,7 +37,7 @@ In the ACK field the receiver sends a dominant bit to signal if the frame went f
 
 This means that we are constantly listening while receiving and others can also jump in.
 
-=== Addressing
+### Addressing
 
 ID is not really a address.
 
@@ -44,26 +46,28 @@ Like different sensor values have different id's, and other nodes can then subsc
 
 Nodes only listen for id's they are interested in.
 
-=== Frame types
+### Frame types
 
-Data Frame:: a frame containing data.
-Remote frame:: a request for a specific resource.
-Error frame:: transmitted by a node on a error.
-Overload frame:: Whaat
+Data Frame
+:   a frame containing data.
+Remote frame
+:   a request for a specific resource.
+Error frame
+:   transmitted by a node on a error.
+Overload frame
+:   Whaat
 
-== Bit synchronization
+## Bit synchronization
 
 Nodes need to agree on whats on the bus.
 
 Bit time must be twice propagation time.
 This means long lines give slower speeds.
 
-====
-.Problem
+### Problem
 Periodic messages with different priority can give non-deteministic behavior, as their clock go in and out of phase.
 
 This can be solved by finding a worst case and checking if it lives up to a requirement.
 However this can be hard if there are many messages.
 
 One can also run simulations.
-====
