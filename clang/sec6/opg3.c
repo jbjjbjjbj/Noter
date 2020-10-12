@@ -16,12 +16,14 @@
 // Sorted word blacklist
 char *blacklist[] = {"a", "and", "of", "the"};
 
-bool checkchar(char c) {
+bool checkchar(char c)
+{
     //return isalpha(c) || c == '\'';
     return isalpha(c);
 }
 
-int getword(char *dest, size_t max) {
+int getword(char *dest, size_t max)
+{
     char c;
     char *w = dest;
 
@@ -47,7 +49,8 @@ exit:
     return c;
 }
 
-bool checkword(char *w) {
+bool checkword(char *w)
+{
     int l = 0;
     int r = BLACKWORDS-1;
 
@@ -81,7 +84,8 @@ typedef struct tree_node {
     struct tree_node *right;
 } treenode_t;
 
-occur_t *occur_insert(occur_t *l, unsigned line) {
+occur_t *occur_insert(occur_t *l, unsigned line)
+{
     occur_t *new = (occur_t *) malloc(sizeof(occur_t));
 
     new->next = l ? l->next : new;
@@ -106,7 +110,8 @@ void occur_print(occur_t *l) {
     }
 }
 
-treenode_t *tree_insert(treenode_t *t, char *word, unsigned line) {
+treenode_t *tree_insert(treenode_t *t, char *word, unsigned line)
+{
     if (!t) {
         treenode_t *node = (treenode_t *) malloc(sizeof(treenode_t));
 
@@ -129,7 +134,8 @@ treenode_t *tree_insert(treenode_t *t, char *word, unsigned line) {
     return t;
 }
 
-void tree_print_words(treenode_t *t, unsigned longest) {
+void tree_print_words(treenode_t *t, unsigned longest)
+{
     if (!t) {
         return;
     }
@@ -142,7 +148,8 @@ void tree_print_words(treenode_t *t, unsigned longest) {
     tree_print_words(t->right, longest);
 }
 
-int main() {
+int main()
+{
     char word[MAXWORDSIZE];
     char c;
     treenode_t *root = NULL;
