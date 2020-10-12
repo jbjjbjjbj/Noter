@@ -4,9 +4,9 @@
 #include "node.h"
 
 typedef struct {
-	node_t *root;
-	node_t *head;
-	unsigned int len;
+    node_t *root;
+    node_t *head;
+    unsigned int len;
 } llist_t;
 
 void llist_init(llist_t *list);
@@ -19,4 +19,4 @@ int llist_get(llist_t *list, unsigned int index);
 
 int llist_pop(llist_t *list, unsigned int index);
 
-#endif 
+#endif

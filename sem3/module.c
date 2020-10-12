@@ -4,11 +4,11 @@
 
 module_init(void)
 {
-	printk(KERN_INFO "COOL_MODULE: Hej med dig\n");
-	return 0;
+    printk(KERN_INFO "COOL_MODULE: Hej med dig\n");
+    return 0;
 }
 
 module_exit(void)
 {
-	printk(KERN_INFO "COOL_MODULE: Nou moe\n");
+    printk(KERN_INFO "COOL_MODULE: Nou moe\n");
 }

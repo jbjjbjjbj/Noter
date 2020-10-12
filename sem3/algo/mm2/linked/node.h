@@ -2,9 +2,9 @@
 #define NODE_H
 
 typedef struct node_struct {
-	int val;
-	struct node_struct *next;
-	struct node_struct *prev;
+    int val;
+    struct node_struct *next;
+    struct node_struct *prev;
 } node_t;
 
 /** @brief Create a new node after specified node 
@@ -20,4 +20,4 @@ node_t *node_insert(node_t *node, int val);
  */
 int node_pop(node_t *node);
 
-#endif 
+#endif

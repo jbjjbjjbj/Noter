@@ -19,26 +19,26 @@ void timer_handler(int signum)
     /* Calculate new alarm */
     tv->tv_sec *= SPEED;
     if (tv->tv_sec == 0) {
-	/* If tv_usec is 0 set i to 1 sec otherwise half it */
-	if (tv->tv_usec == 0) {
-	    tv->tv_usec = 999999;
-	} else if (tv->tv_usec > ENDUSEC) {
-		tv->tv_usec *= SPEED;
-	    if (tv->tv_usec < ENDUSEC) {
-			tv->tv_usec = ENDUSEC;
-	    }
-	} else {
-	    /* Return letting the timer be set to ENDUSEC */
-	    return;
-	}
+        /* If tv_usec is 0 set i to 1 sec otherwise half it */
+        if (tv->tv_usec == 0) {
+            tv->tv_usec = 999999;
+        } else if (tv->tv_usec > ENDUSEC) {
+            tv->tv_usec *= SPEED;
+            if (tv->tv_usec < ENDUSEC) {
+                tv->tv_usec = ENDUSEC;
+            }
+        } else {
+            /* Return letting the timer be set to ENDUSEC */
+            return;
+        }
     }
 
     printf("Set to %d and %d\n", timer.it_value.tv_sec, timer.it_value.tv_usec);
     /* Set alarm */
     int err = setitimer(ITIMER_REAL, &timer, NULL);
     if (err) {
-		printf("Hey we got an error guys\n");
-		exit(1);
+        printf("Hey we got an error guys\n");
+        exit(1);
     }
 }
 

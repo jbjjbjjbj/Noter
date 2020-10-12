@@ -14,7 +14,7 @@
 #define BLACKWORDS (sizeof(blacklist) / sizeof(blacklist[0]))
 
 // Sorted word blacklist
-char *blacklist[] = {"a", "and", "of", "the"};
+char *blacklist[] = { "a", "and", "of", "the" };
 
 bool checkchar(char c)
 {
@@ -37,7 +37,7 @@ int getword(char *dest, size_t max)
     }
 
     *w++ = tolower(c);
-    for ( ; --max; w++) {
+    for (; --max; w++) {
         if (!checkchar(c = getchar())) {
             break;
         }
@@ -52,18 +52,18 @@ exit:
 bool checkword(char *w)
 {
     int l = 0;
-    int r = BLACKWORDS-1;
+    int r = BLACKWORDS - 1;
 
     while (l <= r) {
-        int m = (l+r)/2;
+        int m = (l + r) / 2;
         int compare = strcmp(w, blacklist[m]);
         if (compare == 0) {
             return true;
         }
         if (compare < 0) {
-            r = m-1;
+            r = m - 1;
         } else {
-            l = m+1;
+            l = m + 1;
         }
     }
 
@@ -86,7 +86,7 @@ typedef struct tree_node {
 
 occur_t *occur_insert(occur_t *l, unsigned line)
 {
-    occur_t *new = (occur_t *) malloc(sizeof(occur_t));
+    occur_t *new = (occur_t *)malloc(sizeof(occur_t));
 
     new->next = l ? l->next : new;
     new->line = line;
@@ -97,12 +97,13 @@ occur_t *occur_insert(occur_t *l, unsigned line)
     return new;
 }
 
-void occur_print(occur_t *l) {
+void occur_print(occur_t *l)
+{
     if (!l) {
         return;
     }
     occur_t *n = l->next;
-    for ( ; n; n = n->next) {
+    for (; n; n = n->next) {
         printf("%d ", n->line);
         if (n == l) {
             break;
@@ -113,7 +114,7 @@ void occur_print(occur_t *l) {
 treenode_t *tree_insert(treenode_t *t, char *word, unsigned line)
 {
     if (!t) {
-        treenode_t *node = (treenode_t *) malloc(sizeof(treenode_t));
+        treenode_t *node = (treenode_t *)malloc(sizeof(treenode_t));
 
         strcpy(node->word, word);
         node->left = node->right = NULL;
@@ -170,8 +171,10 @@ int main()
         root = tree_insert(root, word, line);
 
         // This goto can be replaced by a for loop
-next_word:
-        if (c == '\n') { line++; }
+    next_word:
+        if (c == '\n') {
+            line++;
+        }
     }
 
     tree_print_words(root, longest);

@@ -5,23 +5,23 @@ struct vertex_struct;
 
 // Linked list
 typedef struct edge_struct {
-	int weight;
-	struct vertex_struct *from;
-	struct vertex_struct *to;
-	// Linked list stuff
-	struct edge_struct *next;
-	struct edge_struct *prev;
+    int weight;
+    struct vertex_struct *from;
+    struct vertex_struct *to;
+    // Linked list stuff
+    struct edge_struct *next;
+    struct edge_struct *prev;
 } edge_t;
 
 typedef struct vertex_struct {
-	char ref;
-	int dist;
-	struct vertex_struct *p;
-	edge_t *adj;
+    char ref;
+    int dist;
+    struct vertex_struct *p;
+    edge_t *adj;
 } vertex_t;
 
 typedef struct {
-	vertex_t *vertexes[128];
+    vertex_t *vertexes[128];
 
 } graph_t;
 

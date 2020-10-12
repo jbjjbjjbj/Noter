@@ -2,7 +2,7 @@
 #define GRAPH_H_
 
 #define COLOR_WHITE 0
-#define COLOR_GRAY  1
+#define COLOR_GRAY 1
 #define COLOR_BLACK 2
 
 #define HASHSIZE 128
@@ -11,29 +11,29 @@ struct vertex_struct;
 
 // Linked list
 typedef struct edge_struct {
-	int weight;
-	struct vertex_struct *from;
-	struct vertex_struct *to;
-	// Linked list stuff
-	struct edge_struct *next;
-	struct edge_struct *prev;
+    int weight;
+    struct vertex_struct *from;
+    struct vertex_struct *to;
+    // Linked list stuff
+    struct edge_struct *next;
+    struct edge_struct *prev;
 } edge_t;
 
 typedef struct vertex_struct {
-	char *ref;
-	int color;
+    char *ref;
+    int color;
 
-	int dtime;
-	int ftime;
+    int dtime;
+    int ftime;
 
-	edge_t *adj;
+    edge_t *adj;
 
-	// Hash table stuff
-	struct vertex_struct *next;
+    // Hash table stuff
+    struct vertex_struct *next;
 } vertex_t;
 
 typedef struct {
-	vertex_t *hashtable[128];
+    vertex_t *hashtable[128];
 } graph_t;
 
 int graph_to_dot(FILE *f, graph_t *g);
