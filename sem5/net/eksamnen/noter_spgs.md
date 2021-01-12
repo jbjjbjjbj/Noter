@@ -507,6 +507,125 @@ Requires the idea of *dominant bits* which are explained in the question section
 - Error frame: transmitted by a node on error
 - Overload frame: used to create a delay if more time is needed
 
+# Topic 9 Network layer
+
+## Routing
+
+Different kinds of routering
+
+Source routing
+:   First router decides the whole route.
+
+Hop-by-hop routing
+:   Each router only decides what the next hop should be.
+
+### Algorithms
+
+How to route a large network which can change dynamically.
+
+- Distance Vector routing:
+
+    Keep a vector of all other nodes in the network, including a distance and next neighbour.
+    This has the advantage of little overhead, but has slow convergence and count to infinity problem.
+
+- Link state routing
+
+    Keep a graph of the whole network and use dijkstra to find shortest route.
+    However this comes at the cost of scalability.
+
+- Hierarchical routing
+
+    Much better for large network where one only stores information about a specific region and does not keep track of every route.
+    Much like the postal system.
+
+## Congestion
+
+When the traffic exceeds the limits of the network or a part of it.
+It is desirable if hitting this limit does not congest the network.
+
+To prevent congestion one should monitor the network.
+Here are some things to avoid:
+
+- Avoid oscillations
+- Avoid increasing traffic to much
+
+Congestion is affected by many things from the different layers.
+These are summarized on slide 18.
+
+### Solutions
+
+Sending of *choke packages* if a node gets congested.
+This is sent as a notification from receiver to sender.
+
+With *Explicit Congestion Notification* a node can set a congestion bit on a passing packet.
+When a reply is sent back this bit is included and a sender will know that congestion happen on a specific route.
+This has a slower reaction time.
+
+### Quality of service
+
+Different services may have requirements to the network.
+These requirements could be on Bandwidth, latency, jitter or loss.
+
+For example video services require high bandwidth and predictable latency(low jitter).
+
+Telephony does not require a lot of bandwidth and lost packages are okay.
+However it requires low latency and jitter to make a conversation doable.
+
+Slide 25 summarizes different requirements for different services.
+
+#### Queuing
+
+One can use a simple FIFO queue which gives no QOS, as who comes first get served first.
+
+Weight Fair Queuing (WFQ) select packets based on a priority scheme, so important packages will get served first.
+
+WFQ also enables ISP's to prioritise enterprise traffic over commercial ones.
+
+#### Shaping slow
+
+Ways of affecting jitter and latency can be done with special queues.
+
+If we want to output traffic predictably with a limited bandwidth one can use a *leaky bucket*.
+
+##### Leaky bucket
+
+Make a irregular slow of packets into a regular one.
+
+Leaks out packets at a constant rate.
+
+Defined by its output rate and capacity.
+
+##### Token bucket
+
+Contains memory and allows for creating bursty traffic.
+
+Traffic is controlled by tokens.
+When tokens are available packets are sent.
+A number of tokens are added at a constant rate.
+
+Defined by the rate of tokens and the max amount of tokens.
+
+Can be combined with a leaky bucket to limit the bursty traffic.
+
+## Ip address classes
+
+- Class A: 1.0.0.1 to 126.255.255.254
+- Class B: 128.1.0.1 to 192.255.255.254
+- Class C: 192.0.1.1 to 223.255.254.254
+- Class D: 224.0.0.0 to 239.255.255.255
+    - Used for multicast
+- Class E: 240.0.0.0 to 254.255.255.254
+    - Reserved for future use and research.
+
+This has the disadvantage of wasting a lot of space.
+
+## Ip routing
+
+Operators have AS numbers with each AS number assigned to a area.
+Between AS numbers OSPF (Open Shortest Path First) is used.
+
+AS numbers communicate routes using BGP.
+
 # Spørgsmål
 
 If we answer a question nicely and quickly, we just get another question.
@@ -759,6 +878,32 @@ Here frame id=3 will win.
     Assume that the token bucket has a rate of 5 packets per second, and a capacity of 60 tokens.
     The leaky bucket has a rate of 20 packets per second. Assume that the token bucket isempty.
     200 packets has arrived. How long will it take before all packets have left?
+
+First 60 packets are let through to the leaky bucket.
+After these the rest (140) will be let through at a rate of 5 packets per second, taking 28 seconds.
+
+Notation will be `input(before,after_input)output`.
+
+```
+SEC		TOK				LEAK
+1		200(0,200)60	60(0,60)20
+2		0(140)5			5(40,45)20
+3		0(135)5			5(25,30)20
+4		0(130)5			5(10,15)15
+5		0(125)5			5(0,5)5
+```
+
+It takes 4 seconds for the first 60 to pass through, and after that it goes at the rate of 5 a second.
+After 4 it will therefore take 26 seconds to empty the token bucket.
+
+Thus a total of 30 seconds.
+
+SHIIIT token bucker er tom.
+**ATTEMPT 2**
+
+Det tager 40 sec for token bucket at give alle pakkerne ud ved 5 per sec.
+Efter 40 sec har leaky bucket 5 tilbage, og det vil tage `5/20` sec.
+
 19. **Explain flooding and broadcast storm problem in ad hoc networks.**
 20. **Explain the difference between proactive and reactive routing approaches.**
 21. **Explain the main principles of Dynamic Source Routing protocol.**
