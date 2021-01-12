@@ -83,6 +83,8 @@ Causal order
 Have a counter which is incremented before each event.
 Include this counter in each message sent.
 
+*Lamport clock*
+
 When a recipeint receives a message set its counter to either its own or the senders depending on which is largest.
 
 Scaler clocks are not strictly consistent, but can be used to define total order.
@@ -626,7 +628,98 @@ Between AS numbers OSPF (Open Shortest Path First) is used.
 
 AS numbers communicate routes using BGP.
 
-# Spørgsmål
+# Topic 10
+
+Adhoc have the advantage of creating spontaneous networks, while giving the same functionality of network infrastructure.
+
+This is hard because as this must be created from a one-to-one hop network, where multiple hops must be traveled for a packet to reach its destination.
+
+This introduces a *location service* where nodes must map a logical location with a real device located somewhere in the network.
+
+Because of the wireless nature, these network can have a very low reliability which requires a special transport layer.
+
+## Routing
+
+Why is routing so hard:
+
+- Can have asymmetric links
+- Redundant links
+- Changing and dynamic network topology
+
+A route formed may not work later, or for a reply.
+
+Forwarding is the idea that nodes should only know the next link in the route.
+
+Different methods:
+
+- Link state routing
+    - Bad fit for adhoc as it requires all nodes to know while topology.
+- Distance vector
+    - Better fitting for adhoc as it has lower routing overhead.
+    - But should watch out with routing loops.
+
+### Types
+
+Proactive
+:   Keep a table of routes, so a forward or route is a simple lookup away.
+:   Requires that topology changes are propagated through network.
+
+Reactive
+:   Information is acquired when it is needed.
+
+## Solutions to broadcast problem
+
+- Wait a random amount of time when retransmitting.
+- Only retransmit with a change. Known as *gossiping*.
+- Do not forward if it has heard it from more than *k*.
+- If it hears packet within *x* physical distance, do not rebroadcast.
+
+# Topic 11 Transport layer
+
+## UDP
+
+Connectionless and unreliable, as is does not have any flow and congestion control.
+
+Serves as the base for RDP, which adds timestamps and sequence numbers.
+
+## TCP
+
+Handles connection between endpoints, supporting multiplexing with the socket API.
+
+Connection oriented with communication going both ways, and supports reliable in order communication.
+
+Individual data streams are identified with two IP addresses, protocol number and two port numbers.
+
+### Header
+
+Important information in the header is:
+
+- Sequence number
+:   Used to set the initial seq number(SYN=1) and the counted sequence number is the session.
+- ACK number
+:   The next expected sequence number, which basically says: "I have heard everything up until now".
+- Window size
+:   The amount of bytes the receiver is willing to receive.
+
+### Handshake
+
+Utilizes a 3 way handshake, `SYN, SYN-ACK, ACK`.
+This sets up the initial sequence number, and maximum segment size.
+
+`FIN` is signalled if a direction is done, so two `FIN`s to close the connection.
+Can also close with the `RST` flag.
+
+### Flow/congestion control
+
+Also explained a bit in the question section.
+
+*Flow control* adapts sending rate to receiver speed and prevents buffer overflow at the receiver.
+This is done by having the receiver notify sender about available buffer space.
+
+*Congestion control* tries to avoid network overload, and prevent packet loss underway.
+This is done by dynamically adjusting sending rates, depending on network behavior (also called *elastic traffic*).
+
+# Questions
 
 If we answer a question nicely and quickly, we just get another question.
 We should not work hard to scretch time.
@@ -904,21 +997,136 @@ SHIIIT token bucker er tom.
 Det tager 40 sec for token bucket at give alle pakkerne ud ved 5 per sec.
 Efter 40 sec har leaky bucket 5 tilbage, og det vil tage `5/20` sec.
 
+Så det vil tage 40.25 sekundter.
+
 19. **Explain flooding and broadcast storm problem in ad hoc networks.**
+
+Flooding is a simple method of propagating information to a whole network.
+If one wants to broadcast information to the whole network, it will send it to all its neighbours.
+
+These neighbours will forward this to their neighbours.
+Here it is important for nodes to ignore flooding packets it has already seen, to avoid a infinite loop.
+
+This can also be avoided with a time to live.
+
+Flooding can create problems, some of them labeled *broadcast storm* problem.
+These have different types.
+
+- Redundant rebroadcast
+:   Same message is sent to the same node multiple times.
+- Contention
+:   Neighbours wanting to send the same packet may lead to contention on the channel.
+- Collision
+:   High change of multiple nodes sending a broadcast packet to a single node, which leads to collision.
+
+
 20. **Explain the difference between proactive and reactive routing approaches.**
+
+Proactive routing protocols continuously propagates routing information to all nodes, also if no traffic is sent.
+Therefore packets can immediately be sent as the next hop is found with a simple lookup, which gives a low latency.
+
+However constant traffic is needed to keep routes up to date.
+
+Reactive routing protocols do this on demand.
+If a route is needed it will send control traffic to find a route.
+Less constant control traffic is therefore needed, however a higher latency can be expected.
+
+Reactive often use Routing request packets.
+
 21. **Explain the main principles of Dynamic Source Routing protocol.**
+
+Is a reactive routing protocol as route discovery is done when source wants to send a packet.
+
+When a packet is to be sent, the source sends a RREQ (route request) which is flooded through the network.
+Each node appends its own ID.
+
+When the RREQ reaches the destination a RREP is sent back with the route in the RREQ.
+This then follows the reverse route, requiring that links are bidirectional.
+
+If uni direction is possible, the reply should also do route discovery.
+
+While source is sending packets is detect if a route does not exist anymore.
+This is called *route maintanance*.
+
+*Route maintanance* is implemented with confirmation receipts for single hop, and *route error* for notifying source.
+
+The appending of routes has the effect that packet length grows with route length.
+
+DSR also employs route caching.
+If nodes underway get a RREQ with a incomplete route in it, it will save it as a route to source.
+This is also done when forwarding data packets.
+
+DSR has the advantage of only maintaining routes of who is talking together.
 
 ## Transport layer
 
 22. **Explain how TCP achieves reliable in-order delivery of TCP segments. What is the role of a receiver buffer and how is receiver buffer overflow prevented?**
-23. **Explain the congestion control mechanismof TCP (slow-start phase and congestion avoidance).**
+
+It is normal for programs to read TCP as they process the information coming in.
+It is therefore not guarantied that the data is read directly as it is received, as the program may be doing calculations.
+
+The receiver should therefore keep a buffer of received but not processed data.
+
+To keep this buffer from being overloaded by incoming packets TCP deploys *flow control*, where the receiver signals available buffer space.
+
+The sender keeps a sliding window, which keeps track of packets sent.
+The window tail is moved forward as sent packets are ACK'ed by receiver and the head moves forward as the receiving window grows.
+
+The sender keeps track of this window making sure not to go to much forward (by sending to many packets).
+
+This is illustrated in notebook and below.
+
+```
+Seq: 1 '2 '3 '4 '5 '6 '7 '8 '9 '10'11'12
+          |<    Sender window    >|
+          |                 !     |
+        Last               Last   Recv
+        ACK                sent   buffer
+                                  end
+```
+
+23. **Explain the congestion control mechanism of TCP (slow-start phase and congestion avoidance).**
+
+The size of the sender congestion window is used to control sending rate, and thus used as congestion control.
+
+TCP implements *slow-start* where a initial window size (cwnd) is set to 1.
+Whenever a ACK is received increase cwnd with number of ACKs (or bytes).
+
+*Slow-start* phase ends when `cwnd > ssthreshold`.
+And is started again at a timeout.
+
+At a timeout set `threshold = cwnd/2`, and cold start.
+And at a 3 dup ack, half cwnd.
+
+If high bandwidth is desired, increase cwnd with 1 after each successful ack in threshold period, and double cwnd before threshold for each ack.
+
 24. **What are the possible problems of executing TCP over a wireless technology? How can these be mitigated?**
+
+Wireless links have large delays, low throughput and high packet loss due to noise, interference and fading.
+
+This is a challenge for IP protocols not designed for these links.
+
+Problem with TCP is that it assumes congestion on transmission errors, which degrades performance.
+
+This can be solved in different ways, at different places in the protocol stack.
+
+- Link layer
+    - Do local retransmission of packets, which hides losses from sender.
+    - Cannot be used with IPSEC
+    - Retransmission create fluctuation in RTT (round trip time) which confuses TCP.
+- Notify TCP of network condition/loss type.
+- Change TCP ifself.
+    - Have to do this end-to-end. But can be put in the middle of existing tcp connection. *Split connection*
+
+*Split connection* has the advantage of not requiring changes outside wireless network, and allows for smaller headers as one controls the TCP protocol on the wireless link.
+However one loses TCP symantics and does not work with encryption.
+
+*TCP SACK* is designed to be used with wireless networks.
 
 ## Introduction to Fault Tolerance
 
-25. **A server node shows has a down-time of 20 hours per year. Show how to calculate the resulting availability Pr(Server operational). **
+25. **A server node shows has a down-time of 20 hours per year. Show how to calculate the resulting availability Pr(Server operational).**
     Extend your derivation to the case of aredundant structure of 3 servers. 
     Show how to calculate its availability assuming independent faults.
-
 
 26. **Discuss advantages and disadvantages of cluster structures (that hide the redundancy to accessing nodes) as opposed to an architecture where failover is done via the Clients (such as RSerPool)**
