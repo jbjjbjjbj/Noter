@@ -719,6 +719,105 @@ This is done by having the receiver notify sender about available buffer space.
 *Congestion control* tries to avoid network overload, and prevent packet loss underway.
 This is done by dynamically adjusting sending rates, depending on network behavior (also called *elastic traffic*).
 
+# Topic 12 Fault Tolerance
+
+## Threads
+
+Undesired circumstances.
+
+Service error
+:   Event that occurs when a service deviates from *correct service*.
+:   This could be because the system did not comply with spec or the spec is wrong.
+
+Error
+:   A system state which may cause service failure.
+
+Fault
+:   A cause for an error.
+
+A good idea to create an overview of possible errors, with their impact and likely-hood.
+
+## Means
+
+Threads can be handled in different ways.
+
+Either by removing the fault (*fault removal*) or by handling the fault (*fault tolerance*).
+
+Threads can be removed or minimized with redundancy, where one can add more components (*physical*) or add extra info such as FEC (*informational*) or stuff like retries (*temporal*).
+
+### Fault tolerance
+
+Different parts of a fault tolerant system.
+
+- Fault detection:
+    - Replication and comparison
+    - Timing behavior
+- Fault isolation:
+    Isolation of components, such as with atomic operations or a layering model.
+- Fault revocery:
+    - Backward: retrying, checkpoint and rollback.
+    - Forward: try to move to a consistent state at the cost of result.
+    - Compensation or error masking, as with TMR or FEC (both error correction).
+
+## Metrics and Availability
+
+Availability
+:   Probability of system being operational at time t.
+
+Reliability
+:   Fraction of time system is operational in interval `[t1,t2]`, assuming it was operational at `t1`.
+
+In systems which can repair itself, one can measure the *mean time to failure* (uptime), and its *mean time to repair* (down time).
+
+In systems without repair one can measure its lifetime: *mean time to failure*.
+
+## Replication
+
+In systems with N replicas, one can also measure the availability by multiplying the individual components.
+
+```
+A = 1 - product_sum(1-A_i, i)
+```
+
+Replication is simpler if servers serve a stateless service, where state is maybe moved to clients.
+
+### Server farms
+
+Have multiple servers connected to a load balencer, which forwards traffic to each machines according to a *Server Selection Scheme*.
+
+- Random selection
+- Round Robin
+- Shortest response time first
+
+Here its important that a server which has failed is not selected.
+
+### Cluster frameworks
+
+Can be used with state full applications.
+
+Same software layer across several servers.
+Load balancing is done using IP aliasing, meaning switchers can be slow.
+
+All nodes talk to a central database.
+
+Switchover if something goes wrong.
+It is therefore not possible for connecting clients to see that they are actually possibly talking to multiple servers.
+
+All fault-tolerant operations are kept in clusters, so another can take over if something goes wrong.
+
+Can also deploy a layered software model, with redundancy at each level.
+
+### Distributed redundancy
+
+#### Reliable Server Polling
+
+Have multiple servers each with their own ip address.
+
+Name server check if nodes are online and keeps track of which there are, with ASAP.
+Name servers talk together about connected nodes with ENRP.
+
+When a user connects, it will pull down a list of nodes from the name server and select one of the servers.
+
 # Questions
 
 If we answer a question nicely and quickly, we just get another question.
@@ -807,7 +906,10 @@ A node can then only get the lock if all other nodes permit it.
 
 This comes at a much larger performance cost as the centralized approach.
 
-TODO here a contralized approach may refer to in distributed systems.
+This may also refer to a centralized server where a single server keeps track of who can use the resource.
+This has the clear advantage of being much simpler, however it is a single point of failure in the system.
+
+In large systems a single lock server can also be faced with a very high load.
 
 6. **Give an example of a distributed read and write operation sequence and explain two different consistency criteria.**
 
@@ -856,19 +958,53 @@ If this is not available error detection is a bit useless as a retransmission ca
 Therefore error correction is better.
 Error correction is also better for channels with high latency as retransmission are expensive.
 
-10. **Give examples of MAC protocols with static channel allocation. Discuss their advantages anddisadvantages.**
+10. **Give examples of MAC protocols with static channel allocation. Discuss their advantages and disadvantages.**
 
-TODO
+    Focus on FDMA and TDMA.
+    Obvius advantage is that every thing is nice static and periodic.
 
-Focus on FDMA and TDMA.
-Obvius advantage is that every thing is nice static and periodic.
+    If dynamic requires a central entity which makes allocations.
 
-If dynamic requires a central entity which makes allocations.
+Will talk about *TDMA* (Time) and *FDMA* (Frequency).
+
+TDMA splits the channel into time slots.
+This has the advantage that every only has to tune into one frequency to listen to all nodes.
+
+However TDMA requires that all nodes clock are in sync, and can easily be interference as it only relies on a single frequency.
+Time synchronization is also harder as nodes can move around which gives varying delays.
+
+Instead one can use FDMA where each transmission channel is given a unique frequency.
+This will often place frequencies very close, and thus require large precision at connecting nodes.
+*Crosstalk* is also a problem where transmissions can overlap into other channels.
+
+FDMA solves the problem of requiring precise timing between nodes.
 
 11. **Explain the principle behind a Random Access class of MAC protocols. Give an example of a such a protocol.**
-TODO 
-12. **Explain main features of Carrier Sense Multiple Access (CSMA) protocol, including the differencebetween non-persistent and 1-persistent versions.**
-TODO
+
+In random access schemes nodes transmit when they want(they can check if someone is already sending) *without prior signalling* and if a collision happens a retransmission will happen after a random amount of time.
+This random amount is important to ensure that the same collision does not happen again.
+
+In random access schemes collisions are allowed to happen, and it is assumed that detection and retransmission is possible and not too expensive.
+This therefore fits well with protocols which have small packets.
+
+The classic example of such a protocol is **aloha** where nodes transmit when they want to.
+This protocol was used in ALOHAnet, which was created at the university of HAWAII in 1971.
+
+The problem is aloha is that it has a very long *vulnable period* as packets can be interrupted through its whole sending period.
+*Slotted aloha* tried to solve this a bit.
+
+Aloha can give good results, but performance plummets when much traffic is sent.
+
+12. **Explain main features of Carrier Sense Multiple Access (CSMA) protocol, including the difference between non-persistent and 1-persistent versions.**
+
+Here nodes are more *polite* and check if someone is already talking before transmitting.
+This does not eliminate collisions but greatly reduces the amount of them.
+
+*1-persistent* CSMA will send if the channel is idle.
+Will also transmit immediately after a channel becomes idle.
+
+*Non-persisten* will transmit immediately if the channel is idle.
+But if the channel is busy it will wait a random amount of time after the channel becomes idle.
 
 ## WLAN IEEE 802.11 standard
 
@@ -1129,4 +1265,25 @@ However one loses TCP symantics and does not work with encryption.
     Extend your derivation to the case of aredundant structure of 3 servers. 
     Show how to calculate its availability assuming independent faults.
 
+A year contains a total of `365 * 24 = 8760`.
+This means that the availability is `1 - 20 / 8760 = 0.9977`.
+
+For 3 servers the availability can be found by multiplying the non availability of each.
+
+```
+A = 1 - (20 / 8760)^3 = 0.9999
+```
+
 26. **Discuss advantages and disadvantages of cluster structures (that hide the redundancy to accessing nodes) as opposed to an architecture where failover is done via the Clients (such as RSerPool)**
+
+The advantage of hiding cluster structure is that clients do not have to be special.
+They can simple connect to what looks like a single ip address, and do what must be done.
+If something goes wrong, operations will quickly switch to another cluster node without the client realizing.
+
+This has the advantage of being transparent to client nodes, and thus simplifying their implementation.
+However it has the disadvantage that cluster nodes must be close to each other and connected to the same router.
+If the switching or load balancing hardware fails, the whole system will fail with it.
+
+By having failover on clients one does not have a single point of failure.
+RSerPool also makes it easier to separate the different nodes to different physical locations, as they each have their own ip address.
+
