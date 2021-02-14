@@ -825,7 +825,7 @@ We should not work hard to scretch time.
 
 ## Time, synchronization and order
 
-1. **Explain the need for clock synchronisation by giving an example scenario. Provide an example synchronisation approach for 2 nodes and discuss its advantages/disadvantages**
+- **1.** **Explain the need for clock synchronisation by giving an example scenario. Provide an example synchronisation approach for 2 nodes and discuss its advantages/disadvantages**
 
 **Ide 1:**
 
@@ -853,11 +853,11 @@ This is often implemented with a server recording sessions and their expire time
 
 If this is to be done distributed between multiple server, all servers must have 
 
-2. **Explain the concept of causal partial order using an example event diagram.**
+- **2.** **Explain the concept of causal partial order using an example event diagram.**
 
 Svaret i notesbog.
 
-3. **Explain the motivation and realization of a logical clock using an example.**
+- **3.** **Explain the motivation and realization of a logical clock using an example.**
 
 Multiple users add and remove text to a distributed document sharing program.
 
@@ -869,7 +869,7 @@ Therefore a logical clock can be used to insure additions are applied in the rig
 
 Shown in notebook.
 
-4. **Explain vector clocks and scalar logical clocks using an example and discuss their differences**
+- **4.** **Explain vector clocks and scalar logical clocks using an example and discuss their differences**
 
 Scalar clocks are implemented as a simple counter, counting up for each action.
 On receiving a message which a clock value a client takes the biggest.
@@ -884,7 +884,7 @@ Se sammenligning notesbog.
 
 ## Distributed exclusion, consistency
 
-5. **Explain the'distributed mutual exclusion' problem and compare it to a centralized approach.**
+- **5.** **Explain the'distributed mutual exclusion' problem and compare it to a centralized approach.**
 
 When sharing resources like memory or devices between multiple nodes, it is often unwanted to have multiple nodes access it.
 For example if multiple nodes want to add 3 to a shared variable.
@@ -911,7 +911,7 @@ This has the clear advantage of being much simpler, however it is a single point
 
 In large systems a single lock server can also be faced with a very high load.
 
-6. **Give an example of a distributed read and write operation sequence and explain two different consistency criteria.**
+- **6.** **Give an example of a distributed read and write operation sequence and explain two different consistency criteria.**
 
 The example can be seen in notebook.
 
@@ -927,13 +927,13 @@ So a valid order is.
 
 ## OSI model
 
-7. **What are the advantages of a layered architecture? Explain functionalities of different layers of OSI model.**
+- **7.** **What are the advantages of a layered architecture? Explain functionalities of different layers of OSI model.**
 
 Se det der er skrevet oppe i noterne.
 
 ## Techniques used at Data Link Layer: ARQ and MAC concepts
 
-8. **Explain the three types of ARQ protocols.**
+- **8.** **Explain the three types of ARQ protocols.**
 
 Stop and wait is when the next packet can't be sent without a ACK from the previus.
 
@@ -943,7 +943,7 @@ This allows for the receiver to sent multiple packets thus utilizing bandwidth.
 
 In selective repeat the sender will send many packets and will check which are received. When it will only retransmit the ones that where not ACKED.
 
-9. **Explain the difference between error correction and error detection. Give examples when it is preferable to use one or another, or a combination of them.**
+- **9.** **Explain the difference between error correction and error detection. Give examples when it is preferable to use one or another, or a combination of them.**
 
 Error correction is when parity data is used to correct errors.
 This requires alot of extra parity data, used to reconstruct the original signal.
@@ -958,7 +958,7 @@ If this is not available error detection is a bit useless as a retransmission ca
 Therefore error correction is better.
 Error correction is also better for channels with high latency as retransmission are expensive.
 
-10. **Give examples of MAC protocols with static channel allocation. Discuss their advantages and disadvantages.**
+- **10.** **Give examples of MAC protocols with static channel allocation. Discuss their advantages and disadvantages.**
 
     Focus on FDMA and TDMA.
     Obvius advantage is that every thing is nice static and periodic.
@@ -979,7 +979,7 @@ This will often place frequencies very close, and thus require large precision a
 
 FDMA solves the problem of requiring precise timing between nodes.
 
-11. **Explain the principle behind a Random Access class of MAC protocols. Give an example of a such a protocol.**
+- **11.** **Explain the principle behind a Random Access class of MAC protocols. Give an example of a such a protocol.**
 
 In random access schemes nodes transmit when they want(they can check if someone is already sending) *without prior signalling* and if a collision happens a retransmission will happen after a random amount of time.
 This random amount is important to ensure that the same collision does not happen again.
@@ -995,7 +995,7 @@ The problem is aloha is that it has a very long *vulnable period* as packets can
 
 Aloha can give good results, but performance plummets when much traffic is sent.
 
-12. **Explain main features of Carrier Sense Multiple Access (CSMA) protocol, including the difference between non-persistent and 1-persistent versions.**
+- **12.** **Explain main features of Carrier Sense Multiple Access (CSMA) protocol, including the difference between non-persistent and 1-persistent versions.**
 
 Here nodes are more *polite* and check if someone is already talking before transmitting.
 This does not eliminate collisions but greatly reduces the amount of them.
@@ -1008,7 +1008,7 @@ But if the channel is busy it will wait a random amount of time after the channe
 
 ## WLAN IEEE 802.11 standard
 
-13. **Explain the Random backoff time mechanism used in the standard. Explain how prioritizationof different messages is realized.**
+- **13.** **Explain the Random backoff time mechanism used in the standard. Explain how prioritizationof different messages is realized.**
 
 If the medium is busy multiple devices can wait to send efter.
 A random backoff period is introduced to break this summetry.
@@ -1026,7 +1026,7 @@ The delays are as follows in order of smallest first:
 - PIFS (PCF IFS): For timebounded services implemented in PCF.
 - DIFS: Lowest priority, for asynchronous data.
 
-14. **Explainthe “handshaking” mode of operation (with RTS/CTS messages) and basic mode (without RTS/ CTS) and the associated trade-offs.**
+- **14.** **Explainthe “handshaking” mode of operation (with RTS/CTS messages) and basic mode (without RTS/ CTS) and the associated trade-offs.**
 
 Handshake done before sending between A and B.
 
@@ -1041,7 +1041,7 @@ Good to use with large frames or when collisions are likely.
 
 ## Bluetooth
 
-15. **Explain the principle of frequency hopping as well as its advantages and challenges in terms of channel sharing and coordination.**
+- **15.** **Explain the principle of frequency hopping as well as its advantages and challenges in terms of channel sharing and coordination.**
 
 Frequency hopping is the combination of TDMA and FDMA.
 It has the timeslots of TDMA, but with each new time slot a new frequency is chosen.
@@ -1053,7 +1053,7 @@ Frequency hopping has the advantage of being very resilient to interference, and
 However initial configuration is challenging as all nodes must agree on a clock offset and seed.
 Also clocks must be kept up to date as drifting can cause nodes to get out of sync.
 
-16. **Explain what is a piconet and how data is exchanged between a master and slaves (polling; time synchronization; slot structure; packet types).**
+- **16.** **Explain what is a piconet and how data is exchanged between a master and slaves (polling; time synchronization; slot structure; packet types).**
 
 Piconet is a small bluetooth network which allows multiple slaves to connect to the same master device.
 Each piconet may contain up to 7 simultaneous nodes, and many more parked slaves.
@@ -1076,7 +1076,7 @@ Packet types:
 
 ## Field busses - CAN bus
 
-17. **Explain the role of the frame ID in the priority arbitration scheme used in CAN. Explain what is a dominant and a recessive bit. Show an example of bit sequencesof two frames with different IDs that are transmitted at the same time.**
+- **17.** **Explain the role of the frame ID in the priority arbitration scheme used in CAN. Explain what is a dominant and a recessive bit. Show an example of bit sequencesof two frames with different IDs that are transmitted at the same time.**
 
 Many devices can share a single CAN bus, and priority is therefore beneficial.
 
@@ -1103,7 +1103,7 @@ Here frame id=3 will win.
 
 ## Network layer and routing
 
-18. **You regulate a flow of packets using a token bucket, feeding into a leaky bucket.**
+- **18.** **You regulate a flow of packets using a token bucket, feeding into a leaky bucket.**
     Assume that the token bucket has a rate of 5 packets per second, and a capacity of 60 tokens.
     The leaky bucket has a rate of 20 packets per second. Assume that the token bucket isempty.
     200 packets has arrived. How long will it take before all packets have left?
@@ -1135,7 +1135,7 @@ Efter 40 sec har leaky bucket 5 tilbage, og det vil tage `5/20` sec.
 
 Så det vil tage 40.25 sekundter.
 
-19. **Explain flooding and broadcast storm problem in ad hoc networks.**
+- **19.** **Explain flooding and broadcast storm problem in ad hoc networks.**
 
 Flooding is a simple method of propagating information to a whole network.
 If one wants to broadcast information to the whole network, it will send it to all its neighbours.
@@ -1156,7 +1156,7 @@ These have different types.
 :   High change of multiple nodes sending a broadcast packet to a single node, which leads to collision.
 
 
-20. **Explain the difference between proactive and reactive routing approaches.**
+- **20.** **Explain the difference between proactive and reactive routing approaches.**
 
 Proactive routing protocols continuously propagates routing information to all nodes, also if no traffic is sent.
 Therefore packets can immediately be sent as the next hop is found with a simple lookup, which gives a low latency.
@@ -1169,7 +1169,7 @@ Less constant control traffic is therefore needed, however a higher latency can 
 
 Reactive often use Routing request packets.
 
-21. **Explain the main principles of Dynamic Source Routing protocol.**
+- **21.** **Explain the main principles of Dynamic Source Routing protocol.**
 
 Is a reactive routing protocol as route discovery is done when source wants to send a packet.
 
@@ -1196,7 +1196,7 @@ DSR has the advantage of only maintaining routes of who is talking together.
 
 ## Transport layer
 
-22. **Explain how TCP achieves reliable in-order delivery of TCP segments. What is the role of a receiver buffer and how is receiver buffer overflow prevented?**
+- **22.** **Explain how TCP achieves reliable in-order delivery of TCP segments. What is the role of a receiver buffer and how is receiver buffer overflow prevented?**
 
 It is normal for programs to read TCP as they process the information coming in.
 It is therefore not guarantied that the data is read directly as it is received, as the program may be doing calculations.
@@ -1221,7 +1221,7 @@ Seq: 1 '2 '3 '4 '5 '6 '7 '8 '9 '10'11'12
                                   end
 ```
 
-23. **Explain the congestion control mechanism of TCP (slow-start phase and congestion avoidance).**
+- **23.** **Explain the congestion control mechanism of TCP (slow-start phase and congestion avoidance).**
 
 The size of the sender congestion window is used to control sending rate, and thus used as congestion control.
 
@@ -1236,7 +1236,7 @@ And at a 3 dup ack, half cwnd.
 
 If high bandwidth is desired, increase cwnd with 1 after each successful ack in threshold period, and double cwnd before threshold for each ack.
 
-24. **What are the possible problems of executing TCP over a wireless technology? How can these be mitigated?**
+- **24.** **What are the possible problems of executing TCP over a wireless technology? How can these be mitigated?**
 
 Wireless links have large delays, low throughput and high packet loss due to noise, interference and fading.
 
@@ -1261,7 +1261,7 @@ However one loses TCP symantics and does not work with encryption.
 
 ## Introduction to Fault Tolerance
 
-25. **A server node shows has a down-time of 20 hours per year. Show how to calculate the resulting availability Pr(Server operational).**
+- **25.** **A server node shows has a down-time of 20 hours per year. Show how to calculate the resulting availability Pr(Server operational).**
     Extend your derivation to the case of aredundant structure of 3 servers. 
     Show how to calculate its availability assuming independent faults.
 
@@ -1274,7 +1274,7 @@ For 3 servers the availability can be found by multiplying the non availability 
 A = 1 - (20 / 8760)^3 = 0.9999
 ```
 
-26. **Discuss advantages and disadvantages of cluster structures (that hide the redundancy to accessing nodes) as opposed to an architecture where failover is done via the Clients (such as RSerPool)**
+- **26.** **Discuss advantages and disadvantages of cluster structures (that hide the redundancy to accessing nodes) as opposed to an architecture where failover is done via the Clients (such as RSerPool)**
 
 The advantage of hiding cluster structure is that clients do not have to be special.
 They can simple connect to what looks like a single ip address, and do what must be done.
