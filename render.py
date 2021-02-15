@@ -10,6 +10,7 @@ import re
 tex_template = """\\documentclass[12pt]{article}
 \\usepackage{amsmath}
 \\usepackage{amsfonts}
+\\usepackage{mdframed}
 
 \\newtheorem{definition}{Definition}
 \\newtheorem{lemma}{Lemma}
