@@ -11,9 +11,15 @@ tex_template = """\\documentclass[12pt]{article}
 \\usepackage{amsmath}
 \\usepackage{amsfonts}
 
+\\newtheorem{definition}{Definition}
+\\newtheorem{lemma}{Lemma}
+
 {% if p is not none %}
 \\title{ {{title}} }
 {% endif %}
+
+\\setlength{\parindent}{0cm}
+\\setlength{\parskip}{0.3em}
 
 \\begin{document}
     {% if title is not none %}

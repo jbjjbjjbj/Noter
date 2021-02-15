@@ -1,0 +1,145 @@
+\title{Special Probability Distributions}
+
+TODO Look at discrete distributions.
+
+\section{Moment Generations}
+\emph{These are left over from the last lecture.}
+
+Two random variables with the same $E[X]$ and $Var(X)$ and variance are not the same.
+
+Instead one can calculate the expantance of a higher order of random variable.
+
+\begin{definition}
+    The $n$'th moment of a r.v. is defined as: \[
+        E[X^n] = \sum_{i} x_{i}^{n} p(x_i)
+    .\] 
+\end{definition}
+
+% TODO Describe how to extract a moment
+\begin{definition}
+    The \emph{Moment Generation Function} for a r.v. variable is defined as: \[
+        \varphi(t) = E[e^{t X}] = \sum_{i} e^{t x_i} p(x_i)
+.\] 
+    The continues version is given by: \[
+        \varphi(t) = E[e^{t X}] = \int_{-\infty}^{\infty} e^{tx} f(x) \,dx
+    .\] 
+\end{definition}
+
+From this function one can generate all moments of the random variable X.
+The variance can be calculated from the first two moments.
+
+\begin{lemma}
+    If two r.v. have the same moments they can be said to be the same.
+\end{lemma}
+
+\section{Discrete Distributions}
+
+These are all covered nicely in the book, in section 3.1.5.
+
+\subsection{Bernoulli}
+
+\begin{definition}
+    If a random variable is \emph{Bernoulli} with probability $p$, its PMF is: \[
+        P_X(x) = \left\{
+            \begin{array}{ll}
+                p & \mathrm{for} \: x = 1 \\
+                1 - p & \mathrm{for} \: x = 0 \\
+                0 & \mathrm{otherwise} \\
+            \end{array}
+            \right.
+    .\] 
+\end{definition}
+
+The Bernoulli random variable can also be called the \emph{Indicator} random variable.
+Because either event $A$ occurs or not.
+
+\subsection{Geometric}
+
+Is a series of independent Bernoulli tails, such as the number of coin tosses before a heads occurs.
+
+\begin{definition}
+    If X is \emph{geometric} with parameter $p$ its PMF is: \[
+        P_X(k) = \left\{
+            \begin{array}{ll}
+                p(1-p)^{k-1} & \mathrm{for} \: k = 1,2,3,... \\
+                0 & \mathrm{otherwise}
+            \end{array}
+            \right.
+    .\] 
+    where $0 < p < 1$.
+\end{definition}
+
+\subsection{Binomial}
+
+Suppose a coin toss with $P(H) = p$.
+If the coin is tossed $n$ times $X$ defines the number of heads that are observed.
+
+\begin{definition}
+    If $X \sim Binomial(n,p)$, X is said to be \emph{binomial} and its PMF is: \[
+        P_X(k) = \left\{
+            \begin{array}{ll}
+                \binom{n}{k} p^k (1 - p)^{n-k} & \mathrm{for} \: k = 0,1,2,...,n \\
+                0 & \mathrm{otherwise}
+            \end{array}
+            \right.
+    .\] 
+    where $0 < p < 1$.
+\end{definition}
+
+\subsection{Pascal}
+
+Is also called \emph{Negative binomial} and describes the number of trails before $m$ successes.
+
+\begin{definition}
+    If $X \sim Pascal(m,p)$ its PMF is: \[
+        P_X(k) = \left\{
+            \begin{array}{ll}
+                \binom{k-1}{m-1} p^m (1-p)^{k-m} & \mathrm{for} \: k=m,m+1,m+2,... \\
+                0 & \mathrm{otherwise}
+            \end{array}
+            \right.
+    .\] 
+    where $0 < p < 1$.
+\end{definition}
+
+\subsection{Hyper geometric}
+
+Suppose that a bag contains $b$ blue and $r$ red marbles, and $k \leq b + r$ marbles are chosen.
+Then $X$ is the number of chosen blue marbles.
+
+\begin{definition}
+    If $X \sim Hypergeometric(b,r,k)$ its PMF is: \[
+        P_X(k) = \left\{
+            \begin{array}{ll}
+                \frac{\binom{b}{x} \binom{r}{k-x}}{\binom{b+r}{k}} & \mathrm{for} \: x \in R_X \\
+                0 & \mathrm{otherwise}
+            \end{array}
+            \right.
+    .\] 
+    where $R_X = \{\max(0, k-r), \max(0,k-r)+1,...,\min(k,b)\}$.
+\end{definition}
+
+\subsection{Poisson}
+
+Can be used very well to model random variables in nature.
+
+\begin{definition}
+    A random variable with values 0,2,3,... can be said to be Poisson with parameter $\lambda > 0$, with PMF: \[
+        P(X = i) = e^{-\lambda} \frac{\lambda^i}{i!}
+    .\] 
+\end{definition}
+
+The expected value is: $
+    E[X] = \lambda
+$ 
+
+And the variance is: $
+    Var(X) = \lambda
+$ 
+
+The Poisson distribution can be used to approximate binomial distribution.
+
+\begin{lemma}
+    Two independent Poisson r.v. added together give a poisson distribution with $\lambda = \lambda_1 + \lambda_2$.
+\end{lemma}
+
