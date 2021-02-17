@@ -50,4 +50,24 @@ $$
 
 ## Opgave 3
 
+Først skal man finde $\lambda$.
+
+$$
+    \int_{0}^{\infty} \lambda e^{- \frac x {100}} \mathrm{dx} = 1 \\
+    \left[ - \lambda 100 \cdot e^{- \frac x {100}}\right]_{0}^{\infty} = 1 \\
+    \lambda \cdot 100 = 1 \\
+    \lambda = \frac 1 {100}
+$$
+
+Nu kan man sætte 50 til 150 ind.
+
+$$
+    P(50 < x \leq 150) = \int_{50}^{150} f(x) \mathrm{dx} = - e^{- \frac {150} {100}} + e^{ - \frac {50} {100}} = 0.3834
+$$
+
+Derefter kan vi tage fra 0 til 100.
+
+$$
+    P(x < 100) = \int_{0}^{100} f(x) \mathrm{dx} = - e^{- \frac {100} {100}} = - \frac 1 e
+$$
 
