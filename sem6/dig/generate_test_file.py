@@ -109,7 +109,7 @@ architecture behavior of test_{name} is
                 tof(f"in_{args[0]} <= \"{t[index]}\";")
             else:
                 tof(f"in_{args[0]} <= '{t[index]}';")
-        tof("wait for 1 fs;")
+        tof(f"wait for {td.get('teststep', 1)} fs;")
     tof("wait;\nend process;\nend;")
 
 
