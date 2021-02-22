@@ -1,4 +1,4 @@
--- TEST_START{"inputs": ["clk"], "outputs": [],"teststep": 10, "testin": "101010101010101010101010101010"}TEST_STOP
+-- TEST_START{"inputs": ["clk"], "outputs": [],"teststep": 10, "testin": "0101010101010101010101010101010"}TEST_STOP
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.all;
 
@@ -9,51 +9,19 @@ ENTITY ex1 IS
 END ex1;
 
 ARCHITECTURE impl OF ex1 IS
-    SIGNAL seed : STD_LOGIC := '1';
-    SIGNAL a : STD_LOGIC := '0';
-    SIGNAL first_out : STD_LOGIC := '0';
-    SIGNAL b : STD_LOGIC := '0';
-    SIGNAL c : STD_LOGIC := '0';
-    SIGNAL d : STD_LOGIC := '0';
-    SIGNAL lp : STD_LOGIC := '0';
+    SIGNAL state: std_logic_vector(3 downto 0) := "0001";
+    signal next_state: std_logic_vector(3 downto 0) := "0000";
 
-BEGIN
-    lp <= c XOR d;
-    a <= seed OR first_out;
+begin
+    -- First program the nextstate logic
+    next_state(3 downto 1) <= state(2 downto 0);
+    next_state(0) <= state(2) xor state(3);
 
-    flip1 : ENTITY work.dflip
-    PORT MAP (
-                 d => lp,
-                 q => first_out,
-                 clk => clk
-             );
-
-    flip2 : ENTITY work.dflip
-    PORT MAP (
-                 d => a,
-                 q => b,
-                 clk => clk
-             );
-
-    flip3 : ENTITY work.dflip
-    PORT MAP (
-                 d => b,
-                 q => c,
-                 clk => clk
-             );
-
-    flip4 : ENTITY work.dflip
-    PORT MAP (
-                 d => c,
-                 q => d,
-                 clk => clk
-             );
-
+    -- Implement latching on clock
     process (clk)
     begin
-        if (clk = '0' AND seed = '1') then
-            seed <= '0';
+        if (clk'event and clk = '1') then
+            state <= next_state;
         end if;
     end process;
-
 END impl;
