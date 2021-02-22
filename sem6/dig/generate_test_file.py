@@ -47,6 +47,9 @@ architecture behavior of test_{name} is
 
     # Generate PORT section
     first = True
+    if "clk" in td:
+        tof(f"{td['clk']}: IN STD_LOGIC")
+        first = False
     for i in td["inputs"]:
         if not first:
             tof(";\n")
@@ -70,6 +73,8 @@ architecture behavior of test_{name} is
     tof(");\nend component;\n");
 
     # Define signals
+    if "clk" in td:
+        tof(f"signal in_{td['clk']}: STD_LOGIC;\n")
     for i in td["inputs"]:
         args = i.split(",")
         if len(args) > 1:
@@ -88,6 +93,9 @@ architecture behavior of test_{name} is
         uut: {name} port map(\n""")
 
     first = True
+    if "clk" in td:
+        tof(f"{td['clk']} => in_{td['clk']}")
+        first = False
     for i in td["inputs"]:
         if not first:
             tof(",\n")
@@ -102,14 +110,23 @@ architecture behavior of test_{name} is
         tof(f"{args[0]} => out_{args[0]}")
     tof(");\n\nstim_proc: process\nbegin\n")
 
-    for t in td["testin"]:
+    def wait():
+        tof(f"wait for {td.get('teststep', 1)} fs;")
+
+    for tindex, t in enumerate(td["testin"]):
+        # Add clock
+        if "clk" in td:
+            tof(f"in_{td['clk']} <= '0';")
         for index, i in enumerate(td["inputs"]):
             args = i.split(",")
             if len(args) > 1:
                 tof(f"in_{args[0]} <= \"{t[index]}\";")
             else:
                 tof(f"in_{args[0]} <= '{t[index]}';")
-        tof(f"wait for {td.get('teststep', 1)} fs;")
+        wait()
+        if "clk" in td:
+            tof(f"in_{td['clk']} <= '1';")
+        wait()
     tof("wait;\nend process;\nend;")
 
 
