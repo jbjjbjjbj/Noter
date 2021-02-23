@@ -1,0 +1,94 @@
+\title{Continuous Distributions}
+
+\section{Uniform}
+
+Select a points in the interval $[a, b]$.
+
+\begin{definition}
+    If a random variable $X \sim Uniform(a, b)$ then its PDF is: \[
+        f_X(x) = \left\{
+            \begin{array}{ll}
+                \frac{1}{b - a} & a < x < b \\
+                0 & x < a \wedge x > b
+            \end{array}
+        \right.
+    .\] 
+\end{definition}
+
+The mean value of $X$ is: \[
+    E[X] = \frac{b+a}{2}
+.\] 
+
+And the variance is: \[
+    Var(X) = \frac{(a-b)^{2}}{12}
+.\]
+
+\section{Exponential}
+
+Used to model time in between events, or the lifetime of things.
+This distribution can be seen as the continuous version of \emph{geometric distribution}.
+
+\begin{definition}
+    A random variable $X \sim Exponential(\lambda)$ has PDF: \[
+        f_X(x) = \left\{
+            \begin{array}{ll}
+                \lambda \cdot e^{-\lambda x} & x > 0 \\
+                0
+            \end{array}
+        \right.
+    .\] 
+\end{definition}
+
+It has the CDF: \[
+    F_X(x) = \left(1 - e^{-\lambda x}\right) u(x)
+.\] 
+
+The expected value is: \[
+    E[X] = \frac{1}{\lambda}
+.\] 
+
+And the variance is: \[
+    Var(X) = \frac{1}{\lambda^{2}}
+.\] 
+
+\begin{theorem}
+    An exponential random variable is \emph{memoryless} meaning: \[
+        P(X > x + a | X > a) = P(X > x), \quad \mathrm{for} \; a, x \geq 0
+    .\] 
+\end{theorem}
+
+\section{Gaussian or Normal distribution}
+
+The most important distribution is the normal distribution.
+
+\begin{definition}
+    A random variable $Z \sim N(0, 1)$ has PDF: \[
+        f_Z(z) = \frac{1}{\sqrt{2 \pi}} \exp\left( - \frac{z^{2}}{2} \right), \quad \mathrm{for all} \; x \in \mathbb{R}
+    .\] 
+    And $E[Z] = 0, \quad Var(Z) = 1$.
+\end{definition}
+
+The scaling of the exponential function is to make sure that the area under the PDF is 1.
+
+The CDF of the normal distribution is denoted with $\Phi(x)$, and is defined with a nasty intergral which has to closed form.
+This is often looked up in a table.
+
+\subsection{Scaling and shifting}
+
+One can scale and shift $N(0, 1)$ to make it have other variances and means.
+
+\[
+    X = \sigma Z + \mu, \quad \mathrm{where} \; \sigma > 0
+.\] 
+
+And in reverse $Z = \frac{X- \mu}{\sigma}$.
+
+Then $E[X] = \mu$ and $Var(X) = \sigma^{2}$.
+
+Meaning: \[
+    X \sim N(\mu, \sigma^{2})
+.\] 
+
+The probability of an interval can be found with: \[
+    P(a < X \leq b) = \Phi\left(\frac{b - \mu}{\sigma}\right) - \Phi\left(\frac{a-\mu}{\sigma}\right)
+.\] 

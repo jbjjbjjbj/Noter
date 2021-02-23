@@ -14,6 +14,7 @@ tex_template = """\\documentclass[12pt]{article}
 
 \\newtheorem{definition}{Definition}
 \\newtheorem{lemma}{Lemma}
+\\newtheorem{theorem}{Theorem}
 
 {% if p is not none %}
 \\title{ {{title}} }
