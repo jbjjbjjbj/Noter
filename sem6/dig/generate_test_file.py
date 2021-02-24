@@ -113,7 +113,12 @@ architecture behavior of test_{name} is
     def wait():
         tof(f"wait for {td.get('teststep', 1)} fs;")
 
-    for tindex, t in enumerate(td["testin"]):
+    if "testin" in td:
+        enum = enumerate(td["testin"])
+    else:
+        enum = enumerate([1] * td["testcount"])
+
+    for tindex, t in enum:
         # Add clock
         if "clk" in td:
             tof(f"in_{td['clk']} <= '0';")
