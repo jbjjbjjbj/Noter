@@ -1,5 +1,18 @@
 #!/usr/bin/env python
-# WOW THIS IS TERRIBLE
+"""
+WOW THIS IS TERRIBLE
+====
+Documentation of the file definition thing
+====
+Its just a json string with the following values
+    inputs: List of inputs, vectors are defined with "name,a,b" which becomes "std_logic_vector(a downto b)". Do not include the clock inhere if the "clk" param is used.
+    outputs: Same as inputs but outputs. These are not checked, but they are added as signals to the output wave thing.
+    testin: Test statements. Must be a 2D list or something like that, with [testindex][input_in_order]. ["0000", "0000"] is valid if there is 4 inputs, vectors are given as strings: [["0000", "1"]].
+    testcount: Run number of times without any testinput. Handy if there are no inputs but a clock.
+    clk: Define a new input to use as clock. The clock will be pulsed for every "testin", thus making the test twice as long.
+    teststep: How long to wait with between each pulse. When using clk, it is the time between each pulse.
+"""
+
 import json
 import argparse
 import re
