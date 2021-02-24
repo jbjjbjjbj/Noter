@@ -123,8 +123,8 @@ architecture behavior of test_{name} is
                 tof(f"in_{args[0]} <= \"{t[index]}\";")
             else:
                 tof(f"in_{args[0]} <= '{t[index]}';")
-        wait()
         if "clk" in td:
+            wait()
             tof(f"in_{td['clk']} <= '1';")
         wait()
     tof("wait;\nend process;\nend;")

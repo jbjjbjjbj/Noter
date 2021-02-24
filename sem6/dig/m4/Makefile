@@ -1,4 +1,4 @@
 
-INPUTFILES=ex1 ex2
+INPUTFILES=ex1 ex2 ex3
 
 include ../common.mk
