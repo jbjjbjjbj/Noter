@@ -1,0 +1,71 @@
+\title{Opgaver til Microprocessors 2}
+\date{2021-03-24}
+
+\section{Problem 4.1}
+
+\emph{In Fig. 4-6, the B bus register is encoded in a 4-bit field, but the C bus is represented
+as a bit map. Why?}
+
+It is often wanted to save the result from the ALU in multiple destination registers.
+Therefore one cannot take the shortcut with a 4-bit field, as that would only allow one save at the time.
+
+One cannot present 1 and 2 at the same time in 4-bit field, as that would activate register 3.
+
+\section{Problem 4.5}
+
+{\itshape
+    Suppose that in the example of Fig. 4-14(a) the statement
+    \begin{verbatim}
+        k = 5;
+    \end{verbatim}
+    is added after the if statement. What would the new assembly code be? Assume that
+    the compiler is an optimizing compiler.
+}
+
+Well k is set either way, so one can invert the if.
+
+\begin{verbatim}
+    ILOAD j
+    ILOAD k
+    IADD
+    BIPUSH 3
+    IF_ICMPEQ L1
+    ILOAD j
+    BIPUSH 1
+    ISUB
+    ISTORE j
+    L1: BIPUSH 5
+    ISTORE k
+\end{verbatim}
+
+\section{Problem 4.9}
+
+{\itshape
+    How long does a 2.5-GHz Mic-1 take to execute the Java statement
+    \begin{verbatim}
+        i = j + k
+    \end{verbatim}
+    Give your answer in nanoseconds
+}
+
+First we "compile" the java statement :-).
+
+\begin{verbatim}
+    ILOAD j
+    ILOAD k
+    IADD
+    ISTORE i
+\end{verbatim}
+
+Then we can add how many microinstructions each takes (\textbf{bold} number) multiplied with how many times it is used.
+
+\begin{equation}
+    \underbrace{\mathbf 1 \cdot 4}_{MAIN} + \underbrace{\mathbf 5 \cdot 2}_{ILOAD} + \underbrace{\mathbf 3}_{IADD} + \underbrace{\mathbf 6 \cdot 2}_{ISTORE} = 29
+\end{equation}
+
+Then we can multiply with the nanoseconds a single instruction takes
+\begin{equation}
+    \frac 1 {2.5 \cdot 10^9} \cdot 29 = 11.6 \cdot 10^{-9}\,,
+\end{equation}
+which is 11.6 Nanoseconds.
+

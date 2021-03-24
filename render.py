@@ -11,14 +11,18 @@ tex_template = """\\documentclass[12pt]{article}
 \\usepackage{amsmath}
 \\usepackage{amsfonts}
 \\usepackage{mdframed}
+\\usepackage{float}
+
+\\usepackage{tikz}
+\\usetikzlibrary{automata, positioning, arrows}
 
 \\newtheorem{definition}{Definition}
 \\newtheorem{lemma}{Lemma}
 \\newtheorem{theorem}{Theorem}
 
-{% if p is not none %}
-\\title{ {{title}} }
-{% endif %}
+{% for thing in before %}
+{{thing}}
+{% endfor %}
 
 \\setlength{\parindent}{0cm}
 \\setlength{\parskip}{0.3em}
@@ -32,6 +36,8 @@ tex_template = """\\documentclass[12pt]{article}
 \\end{document}
 """
 
+beforewhitelist = ["title", "date"]
+
 parser = argparse.ArgumentParser()
 parser.add_argument("file", help="The file to load")
 
@@ -39,21 +45,21 @@ args = parser.parse_args()
 
 # Load the file
 content = []
-title = None
+before = []
 with open(args.file, "r") as f:
     for line in f:
-        m = re.findall("\\\\title\{(.*)\}", line)
-        if m:
-            title = m[0]
+        m = re.findall("\\\\([a-zA-Z]*)\{.*\}", line)
+        if m and m[0] in beforewhitelist:
+            before.append(line)
         else:
             content.append(line)
 
 content = "".join(content)
-print(content)
 
 # Write to output
 tmpl = jinja2.Template(tex_template)
-output = tmpl.render(title=title,content=content)
+output = tmpl.render(before=before,content=content)
+print(output)
 
 # Create build folder
 if not os.path.exists("render_build"):
