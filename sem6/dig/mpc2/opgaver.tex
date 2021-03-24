@@ -60,12 +60,12 @@ First we "compile" the java statement :-).
 Then we can add how many microinstructions each takes (\textbf{bold} number) multiplied with how many times it is used.
 
 \begin{equation}
-    \underbrace{\mathbf 1 \cdot 4}_{MAIN} + \underbrace{\mathbf 5 \cdot 2}_{ILOAD} + \underbrace{\mathbf 3}_{IADD} + \underbrace{\mathbf 6 \cdot 2}_{ISTORE} = 29
+    \underbrace{\mathbf 1 \cdot 4}_{MAIN} + \underbrace{\mathbf 5 \cdot 2}_{ILOAD} + \underbrace{\mathbf 3}_{IADD} + \underbrace{\mathbf 6}_{ISTORE} = 23
 \end{equation}
 
 Then we can multiply with the nanoseconds a single instruction takes
 \begin{equation}
-    \frac 1 {2.5 \cdot 10^9} \cdot 29 = 11.6 \cdot 10^{-9}\,,
+    \frac 1 {2.5 \cdot 10^9} \cdot 23 = 9.2 \cdot 10^{-9}\,,
 \end{equation}
-which is 11.6 Nanoseconds.
+which is 9.2 Nanoseconds.
 
