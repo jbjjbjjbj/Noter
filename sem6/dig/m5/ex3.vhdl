@@ -1,4 +1,4 @@
--- TEST_START{"inputs": [], "outputs": ["output,6,0"], "clk": "clk", "testcount": 100}TEST_STOP
+-- TEST_START{"inputs": [], "outputs": ["output,6,0"], "clk": "clk", "testcount": 1000}TEST_STOP
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
