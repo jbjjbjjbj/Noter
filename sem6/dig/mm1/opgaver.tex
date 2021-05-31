@@ -1,0 +1,169 @@
+\title{Opgaver til Lektion 1}
+
+\let\inv\overline
+
+\section{Opgave 1}
+
+Perfect induction af $(A + B) \cdot (A + C) = A + (B \cdot C)$:
+
+\begin{tabular}{lll|ll} \toprule
+    $A$ & $B$ & $C$ & $(A + B) \cdot (A + C)$ & $A + (B \cdot C)$ \\ \midrule
+    0 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 1 & 0 & 0 \\
+    0 & 1 & 0 & 0 & 0 \\
+    0 & 1 & 1 & 1 & 1 \\
+    1 & 0 & 0 & 1 & 1 \\
+    1 & 0 & 1 & 1 & 1 \\
+    1 & 1 & 0 & 1 & 1 \\
+    1 & 1 & 1 & 1 & 1 \\ \bottomrule
+\end{tabular}
+
+Perfect induction af $A \cdot (A + B) = A$:
+
+\begin{tabular}{ll|ll} \toprule
+    $A$ & $B$ & $A + B$ & $A$ \\ \midrule
+    0 & 0 & 0 & 0 \\
+    0 & 1 & 0 & 0 \\
+    1 & 0 & 1 & 1 \\
+    1 & 1 & 1 & 1 \\ \bottomrule
+\end{tabular}
+
+Perfect induction of $A + \inv{A} = 1$:
+
+\begin{tabular}{l|ll} \toprule
+    $A$ & $A + \inv{A} $ & $1$ \\ \midrule
+    0 & 1 & 1 \\
+    1 & 1 & 1 \\ \bottomrule
+\end{tabular}
+
+Perfect induction of $\inv{A + B + C} = \inv{A} \cdot \inv{B} \cdot \inv{C}$:
+
+\begin{tabular}{lll|ll} \toprule
+    $A$ & $B$ & $C$ & $\inv{A + B + C}$ & $\inv{A} \cdot \inv{B} \cdot \inv{C}$ \\ \midrule
+    0 & 0 & 0 & 1 & 1 \\
+    0 & 0 & 1 & 0 & 0 \\
+    0 & 1 & 0 & 0 & 0 \\
+    0 & 1 & 1 & 0 & 0 \\
+    1 & 0 & 0 & 0 & 0 \\
+    1 & 0 & 1 & 0 & 0 \\
+    1 & 1 & 0 & 0 & 0 \\
+    1 & 1 & 1 & 0 & 0 \\ \bottomrule
+\end{tabular}
+
+\section{Opgave 2}
+
+\begin{opg}
+    Show that the following
+
+    \begin{equation*}
+        R = \inv{\inv{A \cdot \inv{B}} \cdot \inv{\inv{A} \cdot B}}
+    \end{equation*}
+
+    is XOR.
+\end{opg}
+
+Man kan skrive XOR operator som:
+\begin{equation*}
+    A \oplus B = (A + B) \cdot \inv{(A \cdot B)}
+\end{equation*}
+
+\begin{tabular}{ll|ll} \toprule
+    $A$ & $B$ & $A \oplus B$ & $(A + B) \cdot \inv{(A \cdot B)}$ \\ \midrule
+    0 & 0 & 0 & 0 \\
+    0 & 1 & 1 & 1 \\
+    1 & 0 & 1 & 1 \\
+    1 & 1 & 0 & 0 \\ \bottomrule
+\end{tabular}
+
+Kan herefter vise at dette er $\inv{\inv{A \cdot \inv{B}} \cdot \inv{\inv{A} \cdot B}}$.
+\begin{equation*}
+    \inv{\inv{A \cdot \inv{B}} \cdot \inv{\inv{A} \cdot B}} = (A + B) \cdot \inv{(A \cdot B)}\\
+\end{equation*}
+Vi kan starte med at bruge DeMorgans lov.
+\begin{equation*}
+    = (A + B) \cdot (\inv{A} + \inv{B}) \\
+\end{equation*}
+Man kan skrive det ud.
+\begin{equation*}
+    = A \cdot \inv{A} + A \cdot \inv{B} + B \cdot \inv{A} + B \cdot \inv{B}
+\end{equation*}
+Vi kan bruge axiomen $X \cdot \inv{X} = 0$.
+\begin{equation*}
+    = A \cdot \inv{B} + B \cdot \inv{A}
+\end{equation*}
+Og nu kan vi bruge DeMorgans lov på venstre side.
+\begin{equation*}
+    \inv{ \inv{A \cdot \inv{B}}} + \inv{ \inv{\inv{A} \cdot B}} = A \cdot \inv{B} + B \cdot \inv{A}
+\end{equation*}
+Og dette passer hvis man lader inverserne gå ud med hinnanden.
+
+\section{Opgave 3}
+
+\begin{opg}
+    Reduce the following expressions:
+    \begin{align*}
+        A \cdot \inv{B} \cdot \inv{C} + A \cdot B \cdot \inv{C} + \inv{A} \cdot \inv{C} \\
+        M \cdot \inv N \cdot P + \inv L \cdot M \cdot P + \inv L \cdot M \cdot \inv N + \inv L \cdot M \cdot N \cdot \inv P + \inv L \cdot \inv N \cdot \inv P
+    \end{align*}
+\end{opg}
+
+Vi starter med den første opgave.
+Her tager vi og bruger den distributive teorem et par gange.
+\begin{equation*}
+    \begin{split}
+        \inv{C} \cdot (A \cdot \inv B + A \cdot B + \inv A) \\
+        \inv{C} \cdot (A \cdot (\inv B + B) + \inv A)
+    \end{split}
+\end{equation*}
+Nu kan vi bruge axiomen \(X + \inv X = 1\) og \(X \cdot 1 = X\).
+\[
+    \inv C \cdot (A + \inv A) = \inv C
+\]
+
+Lad og tage den anden.
+Vi starter med at bruge den distributive teorem et par gange.
+\begin{equation*}
+    \begin{split}
+        M \cdot (\inv N \cdot P + \inv L \cdot P + \inv L \cdot \inv N + \inv L \cdot N \cdot \inv P) + \inv L \cdot \inv N \cdot \inv P \\
+        M \cdot (\inv N \cdot P + \inv L \cdot (P + \inv N + N \cdot \inv P)) + \inv L \cdot \inv N \cdot \inv P
+    \end{split}
+\end{equation*}
+Den inerste parantes er på formen $A + B + \inv A \cdot \inv B$.
+Dette kan vise altid er lig med $1$, ved at starte med DeMorgans lov.
+\[
+    A + B + \inv{A + B}
+\]
+Ud fra axiomen $X + \inv X = 1$ kan vi se at dette altid er 1.
+Nu kan vi sætte dette ind og bruge den distributive lov igen omvendt.
+\[
+    M \cdot (\inv N \cdot P + \inv L) + \inv L \cdot \inv N \cdot \inv P = M \cdot \inv N \cdot P + M \cdot \inv L + \inv L \cdot \inv N \cdot \inv P
+\]
+Mere kan jeg desværre ikke reducere den.
+
+\section{Opgave 4}
+
+\begin{opg}
+    Find expression
+\end{opg}
+
+\begin{verbatim}
+X = ~(A * B)
+Y = ~(A * X)
+Z = ~(B * X)
+C = ~(Y * Z)
+D = ~X
+
+C = ~(~(A * ~(A * B)) * ~(B * ~(A * B)))
+D = ~~(A * B) = A * B
+\end{verbatim}
+
+
+\section{Gate Input Cost}
+
+Skriver lige hurtigt formlen op for GIC.
+\begin{verbatim}
+    GIC = LC + number of terms in boolean expr + number of unique inversions
+\end{verbatim}
+Her er LC litteral cost, hvilket er antallet af ikke unikke variabler.
+
+GIC kan også findes ved at tælle antal inputs i et logic diagram.

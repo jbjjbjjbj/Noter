@@ -12,13 +12,18 @@ tex_template = """\\documentclass[12pt]{article}
 \\usepackage{amsfonts}
 \\usepackage{mdframed}
 \\usepackage{float}
+\\usepackage{amsthm}
+\\usepackage{booktabs}
 
 \\usepackage{tikz}
 \\usetikzlibrary{automata, positioning, arrows}
 
-\\newtheorem{definition}{Definition}
 \\newtheorem{lemma}{Lemma}
-\\newtheorem{theorem}{Theorem}
+
+\\theoremstyle{definition}
+\\newtheorem{definition}{Definition}[section]
+\\newtheorem{theorem}{Theorem}[section]
+\\newtheorem{principle}{Principle}[section]
 
 {% for thing in before %}
 {{thing}}
@@ -26,6 +31,11 @@ tex_template = """\\documentclass[12pt]{article}
 
 \\setlength{\parindent}{0cm}
 \\setlength{\parskip}{0.3em}
+
+\\newenvironment{opg}
+{
+\itshape
+}{}
 
 \\begin{document}
     {% if title is not none %}

@@ -1,4 +1,4 @@
--- TEST_START{"inputs": ["sw0"], "outputs": ["o,3,0"], "clk": "bt0", "testin": "000111001001"}TEST_STOP
+-- TEST_START{"inputs": ["sw0"], "outputs": ["o,3,0"], "clk": "bt0", "testin": "010111110000001100"}TEST_STOP
 library ieee;
 use ieee.std_logic_1164.all;
 
@@ -17,12 +17,19 @@ begin
     -- Implement shifting
     next_state(3 downto 1) <= state(2 downto 0);
     next_state(0) <= sw0;
-    o <= state;
 
     process (bt0)
+        variable bit_count : integer range 0 to 3;
     begin
         if (bt0'event and bt0 = '1') then
             state <= next_state;
+
+            if (bit_count = 3) then
+                o <= next_state;
+                bit_count := 0;
+            else
+                bit_count := bit_count + 1;
+            end if;
         end if;
     end process;
 end impl;

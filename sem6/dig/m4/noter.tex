@@ -1,0 +1,75 @@
+\title{Noter til Lektion}
+
+Dette handlede meget om VHDL men vil mest forklare lidt om logic og nogle forskellige ting man kan lave.
+
+\paragraph{Combinatorial Cirquits} er når man har et kredsløb som er en direkt function af input, som for eksempel en and gate.
+
+Herfra kan man implementere memory så output fra kreds afhænger af alt tidligere input.
+Dette bliver kaldt \textbf{Sequential Cirquits}.
+For det meste bliver denne afhængighed implementeret med en slags \emph{state variabel}.
+
+De forskellige kan ses i slides og der er nok en god ide at finde dem frem til eksamnen.
+
+\paragraph{SR latch} er en meget simpel hvor man en set og en reset input, og et output.
+Den har følgende sandhedstabel.
+
+\begin{tabular}{ll|ll} \toprule
+    $S$ & $R$ & $Q$ & $\neg Q$ \\ \midrule
+    0 & 0 & Last $Q$ & Last $\neg Q$ \\
+    0 & 1 & 0 & 1 \\
+    1 & 0 & 1 & 0 \\
+    1 & 1 & 0 & 0 \\ \bottomrule
+\end{tabular}
+
+Her er det lidt et problem at have en state hvor både $Q$ og $\neg Q$ er 0.
+Dette giver jo ikke så meget mening.
+
+Det også tit en fordel at have en \emph{clock} så man kan bestemme hvornår værdier skal gemmes.
+Dette kan let implementeres med nogle NOR gates.
+
+\paragraph{D latch} udskifter $R$ og $S$ med en et enkelt input og en clock.
+Dette giver mening da man gemmer en værdi på $D$ ved at clock $C$, også er den gemt til man giver den en ny værdi.
+
+\begin{tabular}{ll|ll} \toprule
+    $C$ & $D$ & $Q$ & $\neg Q$ \\ \midrule
+    0 & x & Last $Q$ & Last $\neg Q$ \\
+    1 & 0 & 0 & 1 \\
+    1 & 1 & 1 & 0 \\ \bottomrule
+\end{tabular}
+
+Her tilføjer man tit en \emph{edge triggering} så den kun gemmer når $C$ går fra høj til lav, eller omvendt.
+Dette giver en \textbf{D Flip-Flop} og er implementeret med to D latches.
+
+\paragraph{JK Flip-Flop} fungere som en SR latch men trigger på clock rise eller fall.
+Den har heller ikke problemet med at have en mærkelig state da output bliver flipped når $J=1$ og $K=1$.
+
+\section{Characteristic Equation}
+
+Her beskriver man sin Sequential kreds med en formel.
+Man kan beskrive en D Flip-Flop med:
+\begin{equation*}
+    \begin{split}
+        Q = D \\
+        Q_{n+1} = D_n
+    \end{split}
+\end{equation*}
+
+Eller en JK Flip-Flop med:
+\[
+    Q_{n+1} = J \cdot \neg Q_n + \neg K \cdot Q_n
+\]
+
+\section{State Automaton}
+
+Her har man en enhed hvor output, $O_n$, kan beskrives som følgende.
+\begin{equation*}
+    \begin{split}
+        Q_{n+1} = F(Q_n, I_n) \\
+        O_{n} = G(Q_n, I_n)
+    \end{split}
+\end{equation*}
+
+Her har man altså noget kombinatorisk logic før og efter en block memory, hvilket man kan bruge til at implementere ret avancerede ting.
+Her er det vigtigt at man tager højde for timing mellem disse blokke.
+
+Man kan implementere memory med \texttt{process} functionen i VHDL.

@@ -1,4 +1,4 @@
--- TEST_START{"inputs": ["input,3,0", "write", "read"], "outputs": ["output,3,0"], "testin": [["0000", 0, 0], ["0000", 0, 1], ["1010", 1, 0], ["0000", 0, 1], ["1100", 1, 1], ["0011", 1, 1]]}TEST_STOP
+-- TEST_START{"inputs": ["input,3,0", "write", "read"], "outputs": ["output,3,0"], "testin": [["0000", 0, 0], ["0000", 0, 1], ["1010", 1, 0], ["0000", 0, 1], ["0000", 0, 0], ["0000", 0, 1], ["1100", 1, 1], ["0011", 1, 1]]}TEST_STOP
 library ieee;
 use ieee.std_logic_1164.all;
 

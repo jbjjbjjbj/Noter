@@ -1,0 +1,47 @@
+\title{Eksamnens Noter}
+
+
+The universal set or sample space is the set everything, and is denoted $S$.
+Therefore the probability of hitting $S$ is $P(S) = 1$.
+
+This is the first of 3 axioms repeated below.
+
+\begin{enumerate}
+    \item For any event $A$, $P(A) \geq 0$.
+    \item The probability of hitting sample space is always 1, $P(S) = 1$.
+    \item If events $A_1, A_2, ...$ are \textbf{disjoint} event, then
+        \begin{equation}
+            P(A_1 \cup A_2 ...) = P(A_1) + P(A_2)\,.
+        \end{equation}
+\end{enumerate}
+
+The last axiom requires that the events $A_n$ are disjoint.
+If they aren't one should subtract the part they have in common.
+This is called the \emph{Inclusion-Exclusion Principle}.
+
+\begin{principle}
+    The \emph{Inclusion-Exclusion Principle} is defined as
+    \begin{equation}
+        P(A \cup B) = P(A) + P(B) - P(A \cap B)\,.
+    \end{equation}
+    Definition with 3 events can be found in the in the book.
+\end{principle}
+
+\section{Counting}
+
+The probability of a event $A$ can be found by
+\begin{equation}
+    P(A) = \frac {|A|} {|S|}\,.
+\end{equation}
+It is therefore required to count how many elements are in $S$ and $A$.
+The most simple method is the \emph{multiplication principle}.
+
+\begin{principle}[Multiplication principle]
+    Let there be $r$ random experiments, where the $k$'th experiment has $n_k$ outcomes.
+    Then there are
+    \begin{equation}
+        n_1 \cdot n_2 \cdot ... \cdot n_r
+    \end{equation}
+    possible outcomes over all $r$ experiments.
+\end{principle}
+

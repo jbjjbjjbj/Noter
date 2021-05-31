@@ -1,0 +1,35 @@
+\title{Mininoter}
+
+Der findes har 3 forskellige typer:
+\begin{itemize}
+    \item Island style eller array type som brugt af Xilinx
+    \item Hierachical brugt af Altera
+    \item Logarithmic hvilket er mere eksotisk
+\end{itemize}
+
+Island style indeholder CE (Configurable Elements), IM (Interconnection Matrix) og CB (Connection Block).
+
+Hierachical har mere ting i hierachier i stedet for et grid.
+
+\section{VHDL}
+
+Architecture er en implementation af et design.
+Et design kan have flere implementation hvilket er grunden til at man skal give den et unikt navn.
+
+\texttt{inout} er også en mulighed for pin type, og giver en bidirectional port.
+
+Forskellige værdier til \texttt{STD_LOGIC} og \texttt{STD_LOGIC_VECTOR}.
+
+\begin{itemize}
+    \item \texttt{1} -- forced high
+    \item \texttt{0} -- forced low
+    \item \texttt{Z} -- high impedance
+    \item \texttt{U} -- Uninitialized
+    \item \texttt{X} -- unknown, low impedance
+    \item \texttt{W} -- unknown (weak), low impedance
+    \item \texttt{L} -- weak 0
+    \item \texttt{H} -- weak 1
+    \item \texttt{-} -- wild card, don't care
+\end{itemize}
+
+Port maps are used to compose modules at a higher level.
