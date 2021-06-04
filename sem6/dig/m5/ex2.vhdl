@@ -17,7 +17,7 @@ architecture impl of ex2 is
 begin
     output_int <= std_logic_vector(value);
     output <= output_int;
-    leds <= output_int(7 downto 0);
+    leds <= output_int(23 downto 16);
 
     process (clk)
     begin

@@ -14,6 +14,7 @@ tex_template = """\\documentclass[12pt]{article}
 \\usepackage{float}
 \\usepackage{amsthm}
 \\usepackage{booktabs}
+\\usepackage{siunitx}
 
 \\usepackage{tikz}
 \\usetikzlibrary{automata, positioning, arrows}

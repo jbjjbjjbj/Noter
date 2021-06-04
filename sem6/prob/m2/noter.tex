@@ -1,6 +1,5 @@
 \title{Noter til probability m2}
 
-\section{Random Variables}
 Her mapper man fra et sample space S til en variabel.
 Her kalder man variablen et stort tal R eller sådan noget.
 
@@ -15,7 +14,7 @@ P(X = x) = 0
 $$
 
 
-\subsection{Cumulative Distribution Function}
+\section{Cumulative Distribution Function}
 
 Her måler man prob for at ens random er mindre end et bestemt tal.
 
@@ -33,7 +32,7 @@ Ved discrete random variables vil denne være en slags trappe.
 
 Kan sige at den er \emph{continues from the right} eftersom man har $\leq$ i definition.
 
-\subsection{Probability Mass Function}
+\section{Probability Mass Function}
 
 Works only for discrete random variables.
 Is defines as the probability that $X = a$:
@@ -49,15 +48,17 @@ F(a) = \sum_{all x \leq a} p(a)
 $$
 
 
-\subsection{Probability Density Function}
+\section{Probability Density Function}
 
 Her finder man P i et evigt lille interval:
-Is the derivative of the CDF.
+In the following formula PDF is $f$.
+\begin{equation*}
+    \begin{split}
+        F(a) = P(X \in (-\infty,a]) = \int_{-\infty}^a f(x) dx \\
+        f(a) = \frac{d}{da} F(a)
+    \end{split}
+\end{equation*}
 
-$$
-F(a) = P(X \in (-\infty,a]) = \int_{-\infty}^a f(x) dx \\
-f(a) = \frac{d}{da} F(a)
-$$
 
 The following must be true:
 
@@ -65,7 +66,7 @@ $$
 \int_{-\infty}^{\infty} f(x) dx = 1
 $$
 
-\subsection{Multiple Random Variables}
+\section{Multiple Random Variables}
 
 Have multiple random variables, which can be or is not correlated.
 Can define the joined CDF:
@@ -81,15 +82,28 @@ F_X(x) = P(X \leq x) = P(X \leq, Y < \infty) = F(x, \infty)
 $$
 
 One can not go from marginal to the joined, as they do not contain enough information.
-This is only possible if X and Y are \emph{independent}.
 
-$$
-F_{XY}(x,y) = F_X(x) \cdot F_Y(x) \\
-p(x,y) = p_X(x) \cdot p_Y(y) \\
-f(x,y) = f_X(x) \cdot f_Y(y)
-$$
+However if two random variables, and $A$ and $B$ are two sets of real numbers:
+\[
+    P(X \in A, Y \in B) = P(X \in A) P(Y \in B)\,.
+\]
+% This is only possible if X and Y are \emph{independent}.
+% \begin{align*}
+%     F_{XY}(x,y) &= F_X(x) \cdot F_Y(x) \\
+%     p(x,y) &= p_X(x) \cdot p_Y(y) \\
+%     f(x,y) &= f_X(x) \cdot f_Y(y)
+% \end{align*}
 
-\subsection{Joined PMF}
+\section{Conditional PDF}
+
+If $X$ and $Y$ have a joint PDF, then the conditional PDF of X given that $Y=y$ is
+\[
+    F_{X|Y}(x|y) = \frac {f(x, y)} {f_Y(y)}
+\]
+
+There is also one for PMF not listed here.
+
+\section{Joined PMF}
 
 $$
 P_{XY}(x,y) = P(X = x, Y = y)
