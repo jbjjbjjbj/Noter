@@ -1,0 +1,30 @@
+openapi: 3.0.3
+info:
+  title: open file
+  version: '1.0'
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  /read/{filename}:
+    get:
+      operationId: getFile
+      responses:
+        '201':
+          description: Ok here is the file
+          content:
+            'application/json':
+              schema:
+                type: string
+        '404':
+          description: File not found
+          content:
+            'application/json':
+              schema:
+                type: string
+      parameters:
+        - name: filename
+          in: path
+          description: Name of file to read
+          required: true
+          schema:
+            type: string
