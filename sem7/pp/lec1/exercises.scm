@@ -53,7 +53,7 @@
 	[(null? values) '()]
 	[else (cons (cons (car keys) (car values))
 		    (pair-up (cdr keys) (cdr values)))]))
-  
+
 ;;# Exercise 1.7 (Association list and property lists)
 ;;? Program a function that converts an association list to a property list.
 (define (assoc->prop lst)
