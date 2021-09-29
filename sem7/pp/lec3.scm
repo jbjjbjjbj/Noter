@@ -16,78 +16,77 @@
 	  [else "?"]
 	  )))
 
-(define (create-dispatch methods super-func)
+(define (create-dispatch methods not-found)
   (lambda (msg)
-    (let ([method (assoc msg methods)])
-      (if method (cdr method) ((super-func) msg))
-      )))
+    (cdr (or (assoc msg methods) (not-found msg)))
+    ))
 
 (define (send obj msg . para)
   (let ((method (obj msg)))
     (apply method para)))
 
 (define (new-instance class . para)
-  (apply class (cons '() para)))
+  (apply class (cons #f para)))
 
 ;; TODO implement str 
-(define (object self-into)
+(define (object self)
   (letrec ([whoami 'object]
-	   [dispatch (create-dispatch (list
-				       [cons 'pretty-str (lambda ()
-							   (to-string (send (self) 'pretty)))]
-				       [cons 'pretty (lambda () (list whoami))]
-				       [cons 'type-of (lambda () whoami)]
-				       [cons 'class-of (lambda () object)]
-				       ) '())]
-	   [self (lambda () (if (null? self-into) dispatch self-into))]
-	   ) dispatch))
+	   [dispatch
+	    (lambda (msg)
+	      (let ([self (or self dispatch)])
+		(cond [(eq? msg 'pretty-str) (lambda () (to-string (send self 'pretty)))]
+		      [(eq? msg 'pretty) (lambda () (list whoami))]
+		      [(eq? msg 'type-of) (lambda () whoami)]
+		      [(eq? msg 'class-of) (lambda () object)]
+		      [else (errorf object "msg ~a not found" msg)])
+		))]) dispatch))
 
-(define (point self-into x y)
+(define (point self x y)
   (letrec ([whoami 'point]
-	   [super (lambda () (object (self)))]
-	   [self (lambda () (if (null? self-into) (dispatch) self-into))]
-	   [pretty (lambda () (list whoami x y))]
-	   [move (lambda (dx dy)
-		   (send (self) 'add (new-instance point dx dy)))]
-	   [add (lambda (other)
-		  (new-instance (send (self) 'class-of) (+ x (send other 'getx))
-		    (+ y (send other 'gety))
-		    ))]
-	   [with-color (lambda (color) (new-instance color-point
-						(send (self) 'getx)
-						(send (self) 'gety)
-						color))]
-	   [dispatch (lambda () (create-dispatch (list
-						  [cons 'getx (lambda () x)]
-						  [cons 'gety (lambda () y)]
-						  [cons 'add add]
-						  [cons 'pretty pretty]
-						  [cons 'move move]
-						  [cons 'type-of (lambda () whoami)]
-						  [cons 'class-of (lambda () point)]
-						  [cons 'with-color with-color]
-						  ) super))]
-	   ) (dispatch)))
+	   [dispatch
+	    (lambda (msg)
+	      (let* ([self (or self dispatch)]
+		     [super (object self)])
+		(cond [(eq? msg 'getx) (lambda () x)]
+		      [(eq? msg 'gety) (lambda () y)]
+		      [(eq? msg 'add) (lambda (other)
+					(new-instance (send self 'class-of)
+						      (+ x (send other 'getx))
+						      (+ y (send other 'gety))
+						      ))]
+		      [(eq? msg 'pretty) (lambda () (list whoami x y))]
+		      [(eq? msg 'move) (lambda (dx dy)
+					 (send self 'add (new-instance point dx dy)))]
+		      [(eq? msg 'type-of) (lambda () whoami)]
+		      [(eq? msg 'class-of) (lambda () point)]
+		      [(eq? msg 'with-color) (lambda (color)
+					       (new-instance color-point
+							     (send self 'getx)
+							     (send self 'gety)
+							     color))]
+		      [else (super msg)])))]
+	   ) dispatch))
 
 (define p1 (new-instance point 10 20))
 (define p2 (new-instance point 1 1))
 
-(define (color-point self-into x y . color)
+(define (color-point self x y . color)
   (let ((color (if (null? color) 'green (car color))))
     (letrec ([whoami 'color-point]
-	     [super (lambda () (point (self) x y))]
-	     [self (lambda () (if (null? self-into) (dispatch) self-into))]
-	     [pretty (lambda () (list whoami
-				      (send (self) 'getx)
-				      (send (self) 'gety)
-				      color))]
-	     [dispatch (lambda () (create-dispatch (list
-						    [cons 'get-color (lambda () color)]
-						    [cons 'type-of (lambda () whoami)]
-						    [cons 'pretty pretty]
-						    [cons 'class-of (lambda () color-point)]
-						    ) super))]
-	     ) (dispatch))))
+	     [dispatch
+	      (lambda (msg)
+		(let* ([self (or self dispatch)]
+		       [super (point self x y)])
+		  (cond [(eq? msg 'get-color) (lambda () color)]
+			[(eq? msg 'type-of) (lambda () whoami)]
+			[(eq? msg 'pretty) (lambda ()
+					     (list whoami
+						   (send self 'getx)
+						   (send self 'gety)
+						   (send self 'get-color)))]
+			[(eq? msg 'class-of) (lambda () color-point)]
+			[else (super msg)])))]
+	     ) dispatch)))
 
 ;;# Exercise 3.7
 ;;? What is the value of the expression
