@@ -1,0 +1,62 @@
+* Opgave 1
+
+  Dette er opgave 2.1 fra bogen, på side 86.
+
+** Del opgave A
+
+   #+BEGIN_QUOTE
+   Perform a horizontal fragmentation of relation EMP with respect /{ p1, p2 }/.
+   #+END_QUOTE
+   Her er /p1/ og /p2/ forklaret i opgaven.
+
+   | ENO | ENAME    | TITLE       |
+   |-----+----------+-------------|
+   | E1  | J. Doe   | Elect. Eng. |
+   | E3  | A. Lee   | Mech. Eng.  |
+   | E6  | L. Chu   | Elect. Eng. |
+   | E7  | R. Davis | Mech. Eng.  |
+   |-----+----------+-------------|
+   | E2  | M.Smith  | Syst. Anal. |
+   | E5  | B. Casey | Syst. Anal. |
+   | E8  | J. Jones | Syst. Anal. |
+
+   Desuden, wow hvor er tabel toolet her godt.
+
+** Del opgave B
+
+   #+BEGIN_QUOTE
+   Explain why the resulting fragmentation /(EMP1, EMP2)/ does not fullfill the correctness of fragmentation.
+   #+END_QUOTE
+
+   Well i guess thats because p1 and p2 did not include "Programmer",
+   so now if you join the partitions you wont get the full thing.
+
+** Del opgave C
+
+   #+begin_quote
+   Modify the predicates p1 and p2 so that they partition EMP obeying the correctless rules of fragmentation.
+   To do this, modify the predicates, compose all minterm predicates and deduce the corresponding implications,
+   and then perform a horizontal fragmentation of EMP based on these minterm predicates.
+   Finally, show that the result has completeness, reconstruction, and disjointness properties
+   #+end_quote
+   
+   Okay so the predicates become:
+
+   \begin{align*}
+p_1 &= \mathtt{TITLE} \leq "Programmer" \\
+p_2 &= \mathtt{TITLE} > "Programmer"
+   \end{align*}
+   
+   | ENO | ENAME     | TITLE       |
+   |-----+-----------+-------------|
+   | E1  | J. Doe    | Elect. Eng. |
+   | E3  | A. Lee    | Mech. Eng.  |
+   | E6  | L. Chu    | Elect. Eng. |
+   | E7  | R. Davis  | Mech. Eng.  |
+   | E4  | J. Miller | Programmer  |
+   |-----+-----------+-------------|
+   | E2  | M.Smith   | Syst. Anal. |
+   | E5  | B. Casey  | Syst. Anal. |
+   | E8  | J. Jones  | Syst. Anal. |
+
+   Nu kan vi se at completeness er opfyldt, og at ved at join de to partition får den originale tabel.
