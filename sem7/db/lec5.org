@@ -1,0 +1,42 @@
+* Opgave 8.3 fra bogen
+
+  #+begin_quote
+  Consider the parallel hash join algorithm in Sect. 8.4.1.2.
+  Explain what the build phase and probe phase are.
+  Is the algorithm symmetric with respect to its input relations?
+  #+end_quote
+
+** Explain build and probe phases
+
+   The build phase hashes the =R= phase into $p$ partitions.
+   Then it sends the partitions to their respective nodes.
+   The nodes in $[1, p]$ each receive the partitions and creates a local hash table for $R_j$.
+
+   In the probe phase all nodes do the same with =S= and
+   the nodes $[1, p]$ receives the partitions of =S= joins it with =R=.
+
+** Is the algorithm symmetric?
+
+   No it's not, be inner join(thus =R=) in the build phase, must be completely stored and hashed.
+   It can't start doing join on it while it's receiving.
+
+   A symmetric algorithms allows changing the order in which inputs are consumed.
+
+* Opgave 8.7 fra bogen
+
+  #+begin_quote
+  Consider a nine way join (ten relations are to be joined),
+  calculate the number of possible right-deep, left-deep, and bushy trees,
+  assuming that each relation can be joined with anyone else.
+  What do you conclude about parallel optimization?
+  #+end_quote
+
+  With right-deep we can join them in $10!$ different ways, as we just order them differently down the spine.
+  The same for left-deep.
+
+  For bushy trees we look at the leafs of the tree.
+  Here we can have $10!$ different orders again.
+  But we multiply this with the number of ways to create a 5 leaf binary tree, which i count as 3.
+
+  Therefore the end result is $2 * 10! + 3 * 10! = 5 * 10! = 18144000$.
+  Hmm that does not seem right.

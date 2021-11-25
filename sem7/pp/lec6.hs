@@ -94,11 +94,3 @@ filterWithFold func = foldr (\new pre -> if func new
                                             else pre
                             ) []
 
-
--- Problems part of larger thing
-data LTreeMid = LLeaf Char | LNode LTreeMid LTreeMid
-data LTree = LTree LTreeMid Float
-
-treemerge :: LTree -> LTree -> LTree
-treemerge (LTree ta la) (LTree tb lb) = LTree (LNode ta tb) (la + lb)
-

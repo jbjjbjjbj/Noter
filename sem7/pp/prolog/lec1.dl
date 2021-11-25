@@ -1,0 +1,33 @@
+#lang datalog
+
+% It finds whether a parent is a father or a mother depending on the gender of the parent.
+
+
+
+% Opgave 2
+
+% In the first program, a person is only happy if he/she is both rich and famous.
+% In the second program, a person is happy if he/she is either rich or famous.
+
+
+% Opgave 3
+
+% There is one program containing 3 clauses.
+% The first two clauses are called facts each only containing a single atom.
+% The first two facts each contain a atom with the single term beyonce which is a constant
+
+% Last line is a clause with a head and a body containing two atoms.
+% The body uses the predicates created in the last two lines, while the clause introduces the new predicate happy.
+% The clause uses the variable Person, which is used once in all 3 atoms.
+
+
+% Opgave 4
+
+destinct(red, green).
+destinct(green, blue).
+destinct(red, blue).
+
+% It is symmetric
+destinct(X, Y) :- destinct(Y, X).
+
+colouring(X, Y, XC, YC) :- neighbour(X, Y), destinct(XC, YC).
