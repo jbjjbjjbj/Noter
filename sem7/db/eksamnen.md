@@ -3,6 +3,12 @@
 
   - Lav opgave 2.3 i distributed thing
 
+# Words and Things
+
+  - **ROLAP**: Relational Online Analytical Processing
+  - *Summarizability* on page 52 in DW book.
+  - *Data marts* is a subset of a data wareshouse, containing only as single subject such as sales.
+
 # Nice Spatial SQL Commands
 
   - `ST_GeometryType(thing)` finds the type of `thing`.
@@ -277,6 +283,7 @@ Facts
 : an important entity such as a sale. Often contain a *measures* which are things that can be aggregated, such as sales price.
 Dimensions
 : describes a fact such that we can search for different things. For example where did the sale happen, who bought it etc.
+  Dimensions can also hold *level properties* which hold simple non-hierarchical information.
 
 We can then say that facts live a *cube* with many dimensions (yeah that does not make such sense, so *hypercube* is also sometimes used).
 Often these cubes have around 4-12 dimensions, but often 2 or 3 can be shown due to our stupid brains.
@@ -331,4 +338,106 @@ In regards to *redundancy*, this is something we want to avoid, as it allows for
 
 *warning: very very advanced*
 
+## Querying
+
+There are different ways to query DM, and they are often described with fancy and confusing words and cutting of cubes.
+
+  - **roll-up** is when we want a less detailed view in a dimension. We then group by some higher hierarchy and use the aggregation of the measures.
+  - **drill-down** is the opposite of rolling up, such that we get more detailed information in a dimension.
+  - **drill-out** is when we add a new dimension to the cube (wow thats a super confusing name WTF).
+  - **slice** is when we only want to consider a specific value of a dimension, thus creating a subset of the cube.
+  - **slice/dice** is when we slice on multiple dimensions (jesus christ the naming).
+  - **drill across** here we combine some cubes by some shared dimensions. This creates a new cube with the shared dimensions, and the non-shared dimensions rolled up.
+
+Okay lets continue to the *advanced* stuff.
+
+## Changing Dimensions
+
+We assumme that the information in the dimensions is slowly chainging, and that the schema is fixed.
+Such changes can then be handled in some different ways.
+
+  - **No special handling**, just update it.
+    This creates problems when facts created before the change refer to it, and we then lose context for the fact.
+  - **Versioning of values**, insert a new dimension value with updated values, and use this for future facts.
+    This uses up much more space, but is otherwise rather nice. Expecially if we include a timestamp.
+  - **Capture previous and current value**, with the columns.
+    Well this is better than nothing, but still sucks in many of the same ways.
+  - **Split into changing and constant**, this works in much the same way as versioning, but we keep changing attributes in another table.
+    Therefore we do not waste space on storing constant or slowly changing things, while fast changing values can easily be changed.
+
+## Outrigger
+
+*No this has nothing to do with oil drilling.*
+
+A dimension that is refered from a another dimension table is called an *outrigger*.
+An outrigger can also function as a normal dimension on the side.
+
+## Degenerate Dimensions
+
+What if we want to denote values that are together, such as orders, without attaching properties.
+We could do this with a table with only a number, thereby creating a **degenerate dimension**.
+However this is pointless, and we can just use this value directly in facts, without creating a dimension for it.
+
+## Junk Dimensions
+
+These are dimensions that collect otherwise small dimensions together.
+Here the attributes do not have anything to do with each other.
+
+## Role Playing Dimensions
+
+*What is up with the funky names.*
+
+These are tables that can serve multiple purposes, such as a Date dimension for Order date and Ship date.
+Here we will often only have one table, and use it multiple times.
+
+## Advanced Hierachies
+
+*[Advanced.](https://youtu.be/50m2Q7wPUFg?t=861)*
+
+Until now we assumed that the dimension hierachies are
+
+  - **balanced** in that all instances belong to the lowest level,
+  - **covering** in that non-T level belongs directly to the level above (we do not skip level)
+  - **strict** no dimension value has more than one parent. (For example multiple authors for a book is non-strict)
+
+One example of a dimensions that breaks this would be a *parent-child* hierachy such as a Employee dimension.
+Each employee can also be a manager for other employees.
+
+This can be represented with **bridge tables**, which joins employees to other employees.
+This tables will then only be used when navigating employee relationsships and not when just quering a single employee.
+
+A bridge table contains the following values:
+
+  - *Ancestor* is the parent.
+  - *Descendant* is the child.
+  - *Distance* is the distance from parent to child.
+  - *Top* is true if the ancester is a the top of the tree (and distance is 1, what?? I can't make sense of the examples.).
+  - *Bottom* is true if the descendant is a the bottom of the tree.
+
+
+We can also have **multiple hierachies**, for example different calendar systems for days.
+Here it makes no sense to use both in the same query.
+
+When two hierachies have different analytical purposes, we call them **parallel hierachies**.
+
+# ETL: Extract Transform Load
+
+The **Data staging area** or DSA, functions as transit storage for ETL, where data cleaning opearations are done.
+This should therefore not be used for user queries.
+Here large sequential operations are done to transform data, in a process that should be easy to restart etc.
+When done data can be copied to data marts.
+
+## Extract
+
+Data can either be copied from **cooperative sources** such as replication mechanism, or call backs.
+Data can also come from **non-cooperative sources** via database snapshots, legacy systems, logs or a query language.
+
+We should only load data that has changes since last update, as extraction can otherwise take days or weeks.
+These changes or *deltas* can be calculated each time.
+However it can be beneficial to store an audit timestamp on all rows in the source.
+This process of finding deltas is called **changed data capture** (CDC), where other methods are discussed in slide 10.
+
+## Transform
+
+This can be data convertions such as string encoding or data/time representation.
 
