@@ -39,7 +39,7 @@ ispalindrome x = x == reverse' x
 
 
 -- Okay assuming that a are all integers, i
--- would say that the fype of cfrac :: (Real a, Integral b) -> a -> b -> [b]
+-- would say that the fype of cfrac :: (Real a, Integral b) => a -> b -> [b]
 
 cfrac _ 0 = []
 cfrac x n = let intPart = truncate x in
@@ -69,23 +69,3 @@ flatten' (x:xs) = x ++ flatten' xs
 -- The function type is therefore flatten' :: [[a]] -> [a]
 
 -- When running :t on flatten' we get the same.
-
-
-valid :: (Integral a, Ord a) => [(a, b)] -> Bool
-valid = recur empty
-  where recur _ [] = True
-        recur known (pair:rest) =
-          if key `member` known
-          then False
-          else recur (insert key known) rest
-          where key = fst pair
-
-
--- TODO, case where key is not in is unhandled
-lookup' :: (Integral a, Ord a) => [(a, b)] -> a -> b
-lookup' (pair:rest) key = if (fst pair) == key
-                          then (snd pair)
-                          else lookup' rest key
-
--- I dont see how findfun and lookup are not the same
-findfun = lookup'

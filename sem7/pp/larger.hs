@@ -1,5 +1,26 @@
 import Data.Maybe
 
+-- Fra lec5
+valid :: (Integral a, Ord a) => [(a, b)] -> Bool
+valid = recur empty
+  where recur _ [] = True
+        recur known (pair:rest) =
+          if key `member` known
+          then False
+          else recur (insert key known) rest
+          where key = fst pair
+
+
+-- TODO, case where key is not in is unhandled
+lookup' :: (Integral a, Ord a) => [(a, b)] -> a -> b
+lookup' (pair:rest) key = if (fst pair) == key
+                          then (snd pair)
+                          else lookup' rest key
+
+-- I dont see how findfun and lookup are not the same
+findfun = lookup'
+
+
 data LTree = LLeaf String | LNode LTree LTree
 data LTreeRoot = LTreeRoot LTree Float
 
