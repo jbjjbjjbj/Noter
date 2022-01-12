@@ -2,12 +2,14 @@
 # TODO
 
   - Lav opgave 2.3 i distributed thing
+  - Læs om view maintenance
 
 # Words and Things
 
   - **ROLAP**: Relational Online Analytical Processing
   - *Summarizability* on page 52 in DW book.
   - *Data marts* is a subset of a data wareshouse, containing only as single subject such as sales.
+  - *Heterogeneity* page 19 in parallel book
 
 # Nice Spatial SQL Commands
 
@@ -427,6 +429,8 @@ This should therefore not be used for user queries.
 Here large sequential operations are done to transform data, in a process that should be easy to restart etc.
 When done data can be copied to data marts.
 
+Slide 25 giver en plan for at opstille en ETL plan.
+
 ## Extract
 
 Data can either be copied from **cooperative sources** such as replication mechanism, or call backs.
@@ -440,4 +444,12 @@ This process of finding deltas is called **changed data capture** (CDC), where o
 ## Transform
 
 This can be data convertions such as string encoding or data/time representation.
+
+This also related to **data quality**.
+Slide 14 states some requirements for data in DW.
+
+## Load
+
+SQL is often slow for loading into DW.
+If used the index should be dropped and reindexed after loading.
 
