@@ -10,6 +10,7 @@
   - *Summarizability* on page 52 in DW book.
   - *Data marts* is a subset of a data wareshouse, containing only as single subject such as sales.
   - *Heterogeneity* page 19 in parallel book
+  - *Total cost* er sum af alle query costs, hvor en query cost bare er cost af billigste materialization ancestor.
 
 # Nice Spatial SQL Commands
 
