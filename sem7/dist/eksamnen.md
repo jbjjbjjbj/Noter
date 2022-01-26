@@ -4,6 +4,7 @@
   - Lav FIFO opgave i exercise5
   - Læs mere om gossip architecture.
   - Read about transactions 17(LOW)
+  - Lav opgave om Chord
 
 # Distributed Mutual Exclusion
 
@@ -73,7 +74,7 @@ We do not need everyone to say yes, just some subset.
 However we must ensure that all subsets have some overlapping processes.
 Therefore processes end up voting for each other.
 
-However it can deadlock.
+However it can deadlock, with three processes.
 
 ### Detection with Heartbeats
 
@@ -160,6 +161,10 @@ This is then sent along with every message.
 
 Then each process knows about the next expected message from each device, and can NACK then this skips.
 
+Practical problem is that we cannot hold infinite sequence numbers and maps of every message ever.
+
+Also agreement only works if we keep sending messages forever.
+This is because we only detect failed messages, when the next messages comes.
 
 ## Orderings for Multicast
 
@@ -210,6 +215,7 @@ We have some requirements for this:
   - **Termination**: Each correct process will decide on a value.
   - **Agreement**: All correct processes decide on the same value.
   - **Integrity**: If all correct processes propose the same value, that value is also decided by all correct processes.
+  - **Weak integrity**: The aggreed value must be a proposed by a correct process.
 
 ## With no Failures
 
@@ -625,7 +631,161 @@ It can use this node to publish files.
 Then when querying, the client only asks the supernode which will flood the request to all other supernodes (not normal peers).
 Peers with enough reputation can themselves become supernodes.
 
+### Searching
+
+There are methods for making search faster, instead of just flooding.
+
+  - **Expanded ring search**: Repeatedly flood query, but with increasing time-to-live
+  - **Random walk**: Start a number of walkers that take a random path through the overlay network.
+  - **Gossiping**: Flood request with a certian probability, thereby flooding the network much like a virus (therefore also called *epidemic protocols*.
+
 ## Structured Peer to Peer
 
+Structured peer to peer has some advantages in that the algorithm can take assumption about the structure and therefore give lower complixity bounds.
+This gives a low message overhead, and shorter retrieval times.
+However these structures are much harder to mentain and is often costly in very dynamic environments.
+
+Here unstructured is much better at self-organization, and is more resilient to node failure.
+However it can guarantee much for the lookup times for objects, and are prone to messaging overhead, thereby hurting scalability.
+
+### Chord
+
+Chord is a protocol and algorithm for a distributed hash table.
+It structures the different peers in a ring, each knowing its successor and predecessor.
+The ring represents the key space, with each peer being responsible for a range of keys (from the predecessor to ifself).
+
+To keep this structure intact, a periodic stabilization is done.
+This is done by asking the successor for its predecessor.
+
+When doing a lookup, a client sends a request to its successor, who will forward it until it lands at the node who is responsible for that key.
+The node can then respond with the lookup result.
+This is not very efficient, so instead chord introduces a finger table which stores a sucessor some keys.
+The distance in keys in the table doubles, thus caching more locations for keys nearby.
+This makes the search take O(log(n)), because we can in each jump halv the distance to our wanted key.
+
+When joining, a node must know a single node in the ring.
+It can then send a join message which will travel the ring until the predecessor and successor.
+
+### Pastry
+
+Pastry works like chord, in that nodes are aranged in a ring, and id's are assigned to nodes.
+Each node also holds multiple successsors and predecessors.
+
+It uses prefix matching to figure out where to send to.
+
+Because multiple nodes can match a prefix, we will often start with shorter prefixes, as they are less specific and allows to select a closer node.
+
+### Tapestry
+
+Same routing system as pastry, but gives more **flexibility** because applications can place replicas close to frequent users of a resource.
+
 # Iot and Routing in IoT
+
+WSN or Wireless Sensor Networks, where very popular in 2005.
+Kind of what IoT is today.
+Usefull for monitoring of ecosystems, disaster and assets.
+Good example to use is the dutch flower auction, where it is used to tracker where carts are.
+
+Here the challenge is to connect sensors wirelessly, in a power efficient way.
+
+Communication is with multihopping between WSN, and then have a decide connect this to the internet with GPRS (General Packet Radio Service).
+Therefore messages must be very short, only around 42 bytes.
+Here messages are timestamped with the local clock of the device, and with the GPRS receive time.
+The global time can then be reconstructed on the DB.
+
+Traditional wifi and IP is often too expensive for WSN, instead using protocols like bluetooth between sensors.
+The standard 802.15.4 is designed for wireless personal area networks.
+The MAC layer had two types of devices, Full function device (FFD) which can talk to any other type and can become a network coordinator, and
+Reduced Function Device (RFD) which can only talk to the network coordinator.
+
+CSMA-CA is Carrier Sense Multiple Access Collision Avoidance, where the backoff is used if channel is occupied.
+
+## Zigbee
+
+Is on top of 802.15.4, and provides routing.
+Here nodes join a network with a 16bit address, and there are routing algorihms for tree, star and mesh topologies.
+
+## 6LoWPAN
+
+Works like an IPv6 over 802.15.4.
+Here the 64bits of the MAC address is reused for the IPv6 address which is 128 bits.
+
+## LoRa
+
+Not based on 802.15.4, but has its own PHY.
+Here LoRaWAN is a MAC layer on top.
+
+This gives a long range of around 2-5 km in urban environments, but above 15 in open.
+
+Gateways are used to connect end devices to the internet.
+
+## SigFox
+
+Very long range, up to 40km with directional antennas.
+SigFox company takes care of coverage, and charge through subscriptions.
+
+Therefore this is more fitting for applications where there are few and small messages.
+
+## NB-Iot
+
+Or narrow band IOT.
+
+## Routing
+
+We need to take some things into account
+
+  - Delay
+  - Link load
+  - Router load
+  - Energy consumption
+  - Loss probability
+
+## Zigbee
+
+Here there is a single coordinator, some routers and some end devices.
+And networks can be structured as Star, Tree, or Mesh networks.
+
+Addresses are assigned with a distributed address assignment scheme.
+Here the coordinator holds three parameters: max number of children of a router, max number of child routers, depth of network.
+These paraters are used by a router to calculate a value `Cskip` which is used compute the size of childrens pool.
+
+In a star network we do not need to route, because everyone is connected via the coordinator.
+With a tree we can use the address scheme to follow the correct path.
+This can also be done with the mesh, but AODV can also be used.
+
+## Directed Diffusion
+
+Way to find a path from a source to a sink.
+Here the sink floods an interest (for example for data in a squeare at a certian update interval).
+First this may be exploratory, so at a lower interval.
+Along the way a reverse information towards the sink is formed (called *gradient* i think).
+These are soft state in that they time out.
+
+Then nodes that can fullfill the interest by sending unicast back.
+Here the cache is consulted to route the entry back.
+
+Now the source can change the interval to the wanted value and use the existing gradient.
+
+## Dynamic Source Routing
+
+This is very much like we had in the other course, with the route requests (RREQ).
+Remember that there where several problems, the slides mention the one with collisions.
+
+When reached the destination, a RREP is sent back.
+Routes back are cached.
+Packages sent thereafter then include the whole route the packet must follow.
+
+This also has the problem that packet header grows with network size, because the whole route must be contained.
+There can also be alot of replies (*reply storm*) because nodes answer from their cache.
+
+## Adhoc On-Demand Routing (AODR)
+
+Instead of including the route in each packet, we let each node hold a routing table.
+Here nodes which are traversed by the route request set up a reverse path pointing to source.
+
+In the route request we include a sequence number.
+Then nodes that know a newer path can reply.
+
+Also nodes that return the routing reply can record that path to the destination.
+Timeouts are used to invalidate routes.
 
