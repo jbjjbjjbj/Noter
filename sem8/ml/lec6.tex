@@ -1,0 +1,64 @@
+\title{Neural Networks first lecture}
+
+There is a lot about this in the book and slides, just some quick notes.
+
+\section{Neural Networks}
+
+When counting layers we do not include the input layer, as that is just the inputs directly.
+
+Each neuron can have a \emph{bias}, which is a value not given by the layer above.
+This can be used to change the point at which is activates, thus shifting the input in the activation function.
+
+We can also have let a neural network output a specification of a gaussian distribution, thus $\mu$ and $\sigma$.
+
+\section{Learning}
+
+\subsection{Loss Functions}
+
+We use $loss$ for a single loss function, and $Loss$ for the summed loss over all outputs.
+
+The \emph{log} error function moves towards learning with maximum likelyhood.
+
+The \emph{cross-entropy} function is  used with discrete outputs, where $o_i$ is the probability of having a specific target $t_i$.
+
+\subsection{Gradient Descent}
+
+Gradient is used interchangibly with derivative.
+This can be used to find the place in the input space (weights) where the error function is low.
+
+We can then move the in the opposide direction of the gradient scaled by a \emph{learning factor}, $\eta$.
+When we start off with some random initial weights, it is not guaranteed that we will reach the globally optimal weights.
+\[
+    \mathbf{w}' = \mathbf{w} - \eta \nabla_{\mathbf{w}} Loss(\mathbf{w})
+\]
+
+This has a problem, which is why we introduce back propagation.
+This is because the derivative of these networks is kind of hard.
+
+\subsection{Back Propagation}
+
+A way of calculating the derivative, by using the derivative chain rule.
+
+One of the books uses \emph{Jacobian matrix} which is just a matrix holding derivative.
+This is an alternative way of representing what is done in the slides.
+
+When calculating the \emph{back progagation} we rely on computational graphs.
+Here we represent out network as a computational graph.
+And then we walk backwards, figuring out inputs to each step in the graph which are just chain rules and partial derivatives.
+
+With this we can also find the partial derivate in regards to intermediate values and inputs, which is interesting for testing
+sensibility.
+
+\subsection{Momentum}
+
+Here we introduce a \emph{velocity} or \emph{momentum} which we use to determine the direction of movement.
+This we can then use to update weights.
+
+This velocity is calculated from the preveous value, meaning that we converge much faster.
+
+\subsection{Vanishing Gradients}
+
+When using a lot of nested sigmoid functions we can often end with a really low update value for the weights.
+This is a problem, and therefore we introduce the \emph{relu} function, which just passes the derivate right through when the input is positive.
+
+
