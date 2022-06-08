@@ -1,0 +1,222 @@
+\title{Exam Notes}
+
+\section{Linear Models}
+
+\subsection{K Nearest Neighbour}
+
+Near neighbours tend to have the same label.
+Therefore prediction is done with the label that occurs most frequently among the $k$ nearest neighbours to the node itself.
+Here distance is in accordance to a $D$-dimensional input feature space.
+
+\begin{mdframed}[nobreak,frametitle={A Note on Features}]
+    \begin{itemize}
+        \item[$\mathbf{x}$] Information we get raw, such as \emph{attributes}, \emph{(input) features}, \emph{(predictor) variables}.
+        \item[$\mathbf{x'}$] Selected, transformed, or otherwise ``engineered'' features.
+        \item[$\mathbf{x''}$] A transformation of $x'$ that is automaticly constructed by the machine learning method.
+    \end{itemize}
+\end{mdframed}
+
+\begin{description}
+    \item[Instance space] Space of all possible values of input features $\mathbf{x}$.
+    \item[Decision regions] A classifier devides the instance space into decision regions.
+\end{description}
+
+\subsection{Perceptron and Naive Bayes}
+
+Linear models, which are therefore limited in the applicability (they cannot predict XOR function).
+However they are usefull baselines, and can be trained well with limited datasets.
+They are also integral components in \emph{support vector machines} and \emph{deep neural networks}.
+
+Less unlikely to overfit, however we can still apply techniques to prevent it.
+
+\subsubsection{The Perceptron}
+
+A neural network with a input layer, no hidden layers, and a single output neuron with a \emph{sign} activation function.
+This is represented as,
+\[
+    O(x_1, \dots, x_n) = \left\{
+        \begin{array}{ll}
+            1 & \mathrm{if}\; w_0 + w_1 \cdot x_1 + \dots + w_n \cdot x_n > 0 \\
+            -1 & \mathrm{otherwise}
+        \end{array}
+        \right.
+\]
+
+This can be used to classify a binary class, where the decisions are seperated by a \emph{linear hyperplane}.
+Therefore it is not possible to classify something like the XOR function.
+
+\subsubsection{Naive Bayes Model}
+
+Here we instead work with probabilities, as opposed to the perceptron.
+It assumes that attributes are independent, given the class label.
+
+Prediction is done by comparing the probability of each label, and then choosing the most likely.
+Thus if labels are $\oplus$ and $\oslash$, we choose $\oplus$ if
+\[
+    P(\oplus \mid X_1, ..., X_n) \geq P(\oslash \mid X_1, ..., X_n)
+\]
+
+\subsection{Overfitting}
+
+Our hypothesis overfits the training data if there exists another hypothesis which performs worse in traning but better in testing.
+Thus we learn our training data too well, thus not capturing the general characteristics of what we are predicting.
+
+This can be the case when the \emph{hypothesis space} is very large, refering to the complexity of the learned structure.
+
+\subsection{Linear Functions and Decision Regions}
+
+Linear function can be written with scalar values or vectors, as follows:
+\[
+    y(x_1, ..., x_D) = w_0 + w_1 \cdot w_1 + \dots + w_D \cdot x_D = w_0 + \mathbf{w} \cdot \mathbf{x}
+\]
+Using it to make decisions, is done with \emph{decision regions},
+\begin{align*}
+    \mathcal{R}_1 &= \{\mathbf{x} \mid y(\mathbf{x}) \geq 0\} \\
+    \mathcal{R}_2 &= \{\mathbf{x} \mid y(\mathbf{x}) < 0 \}
+\end{align*}
+
+Look at the geometry, $\mathbf{w}$ is the direction of the decision boundary between the two binaries.
+And $w_0 / || \mathbf{w} ||$, is the distance between the decision boundary and origin.
+
+\subsubsection{Multiple Classes}
+
+If more than two classes is wanted, one can use multiple linear functions in combination.
+There are different approaches to this, and they have acompanying figures in the slides.
+\begin{itemize}
+    \item Multiple binary "one against all" classification.
+    \item Multiple binary "one against one" classification.
+\end{itemize}
+
+Instead one can construct a \emph{discriminant function} for each of the class labels.
+Then we can classify some input, $\mathbf{x}$, as a label if the corrosponding function is maximal.
+
+\subsubsection{Least Squares Regresssion}
+
+For each data case $\mathbf{x}_n$ have a \emph{target vector}, where class labels are encoded with \emph{one-hot encoding}.
+Then we try to minimize
+\[
+    E_D(\mathbf{\tilde{W}}) = \frac 1 2 \sum_{n=1}^N || \mathbf{\tilde{W}}^T \mathbf{\tilde{x}}_n - \mathbf{t}_n ||^2
+\]
+
+It should be noted that this method does not minimize classification errors, and outliers may cause a learned function to not seperate linearly seperable data correctly.
+
+\subsection{Probabilistic Models}
+
+Here we classify $\mathbf{x}$ as class $k$ if $P(Y = k \mid \mathbf{x})$ is maximal.
+There are two approaches.
+
+\paragraph{Generative Approach} Where we classify from simple assumptions about the distribution of the data.
+    Thus we model the probabilities $P(\mathbf{x} \mid k)$ (class-conditional) and $P(k)$ (class prior) and from this calculate $P(k \mid \mathbf{x})$ (posterior).
+    Examples of this include \emph{Naive Bayes} and \emph{LDA}.
+    Has the consequence that we can generate example data.
+
+    When learning, the goal is to maximize the likelihood:
+    \[
+        \prod_{n=1}^N P(\mathbf{x}_n, y_n)
+    \]
+
+\paragraph{Discriminative Approach} Here we directly learn the distribution $P(Y \mid \mathbf{X})$.
+    Examples are \emph{logistic regression} and \emph{neural networks}.
+
+    Likewise the learning goal is to maximize the likelihood:
+    \[
+        \prod_{n=1}^N P(y_n \mid \mathbf{x}_n)
+    \]
+    Note that this is a conditional probablity and not a joint probability.
+
+\subsubsection{Naive Bayes}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \node[draw, circle] (y) {$\;Y\;$};
+        \node[draw, circle, below=of y] (x2) {$X_2$};
+        \node[draw, circle, right=of x2] (x3) {$X_3$};
+        \node[draw, circle, left=of x2] (x1) {$X_1$};
+
+        \draw[->] (y) edge (x1) (y) edge (x2) (y) edge (x3);
+
+    \end{tikzpicture}
+\end{figure}
+
+Here $P(Y \mid \mathbf{x})$ is a probability table for each class.
+And $P(X \mid Y, \mathbf{w})$ is if $X_i$ is categorical a table, otherwise multiple gaussian distributions with parameters defined by $\mathbf{w}$.
+
+\subsubsection{Gaussian Mixture Models}
+
+Here we do not have the assumption that input variables are independent as with the naive bayes method.
+Instead we model $P(\mathbf{X} \mid Y)$ as Gaussian, such that for all classes $k$:
+\[
+    P(\mathbf{X} = \mathbf{x} \mid Y = y) = \frac 1 {(2\pi)^{D / 2} | \Sigma_k |^{1 / 2}} \cdot e^{-\frac 1 2 (\mathbf{x} - \mathbf{\mu}_k)^T \Sigma_k^{-1}(\mathbf{x} - \mathbf{\mu}_k)}
+\]
+defined with the parameters $\mathbf{\mu}_k$ (mean vectors) and $\Sigma_k$ (co-variance matrixes).
+
+\subsubsection{Logistic Regression}
+
+A model with continues input and two output classes: $0$ and $1$.
+And yes this is classification and not regression (what).
+
+\subsection{Exam Notes}
+
+The topics for the exam are as follows, the missing topics are noted in fat:
+\begin{itemize}
+    \item Decision Regions
+    \item Overfitting
+    \item Least squares regression (corresponding to sklearn LinearRegression in self study 1)
+    \item Linear discriminant analysis
+    \item \textbf{Logistic Regression}
+\end{itemize}
+
+\begin{mdframed}[nobreak,frametitle={Questions that Need Answering}]
+    \begin{itemize}
+        \item What is the logistic regression.
+        \item Løs opgaver for denne lektion.
+    \end{itemize}
+\end{mdframed}
+
+\subsubsection{Self Study 1}
+
+\begin{enumerate}
+    \item Dataset contains for \emph{features}. We show a plot of two of the features, where two of the three classes are \emph{linearly seperable}.
+    \item We create 4 models one of which is the linear regression.
+    \item We know note the \emph{decision regions}, some important points:
+        \begin{itemize}
+            \item KNN can have multiple decision regions for the same class, and the \emph{boundaries} are not linear.
+                This is clear when we have a $N=1$, and a green outlier has its own small region.
+            \item With linear regression, we use 3 \emph{decision functions} and then choose the class which has the largest output.
+                In this case, this does not work that well, given that least squares comes from regression which assumes a gaussian distribution which does not fit binary values.
+        \end{itemize}
+    \item Then we split the data using a seed of one, and predict with KNN ($N=1$), KNN ($N=3$), and linear regression.
+        We see that linear regression gives much worse results, which makes sense given the decision regions that where drawn.
+        From the \emph{confusion matrix} we se that green and blue are very confusing which makes sense.
+    \item We now try with all the features.
+        Here we see that KNN ($N=3$) gives the best results on the testing data, however actually performs worse than $N=1$ on the training data.
+        This may be due to the \emph{overfitting} which happens when increasing the complexity of the model structure.
+
+        Linear also performs much better, due to it being able to use other features the linearly seperate classes.
+\end{enumerate}
+
+
+\section{Support Vector Machines}
+
+\subsection{Exam Notes}
+
+\begin{itemize}
+    \item Maximum margin hypeplanes
+    \item Feature transformations and kernel functions
+    \item The kernel trick
+    \item String kernels
+\end{itemize}
+
+\subsection{Feature Space}
+
+We can create a mapping, $\phi : \mathbb{R}^D \rightarrow \mathbb{R}^{D'}$, which transforms the original data:
+\[
+    \phi(\mathbf{x}) = (\phi_1(\mathbf{x}), \dots, \phi_{D'}(\mathbf{x}))
+\]
+Here the components $\phi_i$ are called \emph{features} or \emph{basis functions} and $\mathbb{R}^{D'}$ is the \emph{feature space} of $\phi$.
+This mapping can be usefull, to transform data such that it is linearly seperable.
+
+\subsection{Nonlinear SVM}
+
+

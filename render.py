@@ -15,6 +15,7 @@ tex_template = """\\documentclass[12pt]{article}
 \\usepackage{amsthm}
 \\usepackage{booktabs}
 \\usepackage{siunitx}
+\\usepackage{enumitem}
 
 \\usepackage{tikz}
 \\usetikzlibrary{automata, positioning, arrows}
@@ -80,4 +81,4 @@ os.chdir("render_build")
 with open("input.tex", "w") as f:
     f.write(output)
 
-subprocess.call(["pdflatex", "input.tex"])
+subprocess.call(["pdflatex", "-halt-on-error", "input.tex"])
