@@ -16,6 +16,8 @@ tex_template = """\\documentclass[12pt]{article}
 \\usepackage{booktabs}
 \\usepackage{siunitx}
 \\usepackage{enumitem}
+\\usepackage{tabularx}
+\\usepackage{cleveref}
 
 \\usepackage{tikz}
 \\usetikzlibrary{automata, positioning, arrows}
@@ -26,6 +28,8 @@ tex_template = """\\documentclass[12pt]{article}
 \\newtheorem{definition}{Definition}[section]
 \\newtheorem{theorem}{Theorem}[section]
 \\newtheorem{principle}{Principle}[section]
+
+\\mdfsetup{nobreak}
 
 {% for thing in before %}
 {{thing}}

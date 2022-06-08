@@ -1,6 +1,9 @@
 \title{Exam Notes}
+\tableofcontents
 
 \section{Linear Models}
+
+This section explains a set of methods, which are all summarized in \cref{tab:lin:compare}.
 
 \subsection{K Nearest Neighbour}
 
@@ -8,7 +11,7 @@ Near neighbours tend to have the same label.
 Therefore prediction is done with the label that occurs most frequently among the $k$ nearest neighbours to the node itself.
 Here distance is in accordance to a $D$-dimensional input feature space.
 
-\begin{mdframed}[nobreak,frametitle={A Note on Features}]
+\begin{mdframed}[frametitle={A Note on Features}]
     \begin{itemize}
         \item[$\mathbf{x}$] Information we get raw, such as \emph{attributes}, \emph{(input) features}, \emph{(predictor) variables}.
         \item[$\mathbf{x'}$] Selected, transformed, or otherwise ``engineered'' features.
@@ -39,7 +42,7 @@ This is represented as,
             1 & \mathrm{if}\; w_0 + w_1 \cdot x_1 + \dots + w_n \cdot x_n > 0 \\
             -1 & \mathrm{otherwise}
         \end{array}
-        \right.
+        \right.\,.
 \]
 
 This can be used to classify a binary class, where the decisions are seperated by a \emph{linear hyperplane}.
@@ -53,7 +56,7 @@ It assumes that attributes are independent, given the class label.
 Prediction is done by comparing the probability of each label, and then choosing the most likely.
 Thus if labels are $\oplus$ and $\oslash$, we choose $\oplus$ if
 \[
-    P(\oplus \mid X_1, ..., X_n) \geq P(\oslash \mid X_1, ..., X_n)
+    P(\oplus \mid X_1, ..., X_n) \geq P(\oslash \mid X_1, ..., X_n)\,.
 \]
 
 \subsection{Overfitting}
@@ -67,7 +70,7 @@ This can be the case when the \emph{hypothesis space} is very large, refering to
 
 Linear function can be written with scalar values or vectors, as follows:
 \[
-    y(x_1, ..., x_D) = w_0 + w_1 \cdot w_1 + \dots + w_D \cdot x_D = w_0 + \mathbf{w} \cdot \mathbf{x}
+    y(x_1, ..., x_D) = w_0 + w_1 \cdot w_1 + \dots + w_D \cdot x_D = w_0 + \mathbf{w} \cdot \mathbf{x}\,.
 \]
 Using it to make decisions, is done with \emph{decision regions},
 \begin{align*}
@@ -83,8 +86,8 @@ And $w_0 / || \mathbf{w} ||$, is the distance between the decision boundary and 
 If more than two classes is wanted, one can use multiple linear functions in combination.
 There are different approaches to this, and they have acompanying figures in the slides.
 \begin{itemize}
-    \item Multiple binary "one against all" classification.
-    \item Multiple binary "one against one" classification.
+    \item Multiple binary ``one against all'' classification.
+    \item Multiple binary ``one against one'' classification.
 \end{itemize}
 
 Instead one can construct a \emph{discriminant function} for each of the class labels.
@@ -95,7 +98,7 @@ Then we can classify some input, $\mathbf{x}$, as a label if the corrosponding f
 For each data case $\mathbf{x}_n$ have a \emph{target vector}, where class labels are encoded with \emph{one-hot encoding}.
 Then we try to minimize
 \[
-    E_D(\mathbf{\tilde{W}}) = \frac 1 2 \sum_{n=1}^N || \mathbf{\tilde{W}}^T \mathbf{\tilde{x}}_n - \mathbf{t}_n ||^2
+    E_D(\mathbf{\tilde{W}}) = \frac 1 2 \sum_{n=1}^N || \mathbf{\tilde{W}}^T \mathbf{\tilde{x}}_n - \mathbf{t}_n ||^2\,.
 \]
 
 It should be noted that this method does not minimize classification errors, and outliers may cause a learned function to not seperate linearly seperable data correctly.
@@ -112,7 +115,7 @@ There are two approaches.
 
     When learning, the goal is to maximize the likelihood:
     \[
-        \prod_{n=1}^N P(\mathbf{x}_n, y_n)
+        \prod_{n=1}^N P(\mathbf{x}_n, y_n)\,.
     \]
 
 \paragraph{Discriminative Approach} Here we directly learn the distribution $P(Y \mid \mathbf{X})$.
@@ -120,9 +123,27 @@ There are two approaches.
 
     Likewise the learning goal is to maximize the likelihood:
     \[
-        \prod_{n=1}^N P(y_n \mid \mathbf{x}_n)
+        \prod_{n=1}^N P(y_n \mid \mathbf{x}_n)\,.
     \]
     Note that this is a conditional probablity and not a joint probability.
+
+\begin{mdframed}[frametitle={Sigmoid, Logit, and log-odds}]
+    The function $\sigma(x)$, also called the \emph{logistic sigmoid}, is defined by
+    \[
+        \sigma(x) = \frac 1 {1 + e^{-x}}\,.
+    \]
+    This function maps the whole real axis into a finite interval.
+
+    The \emph{logit} function is defined as the inverse of $\sigma(x)$,
+    \[
+        x = \ln \left( \frac \sigma {1 - \sigma} \right)\,,
+    \]
+    and represents the ratio
+    \[
+        \ln \left( \frac {P(k_1 \mid \mathbf{x})} {P(k_2 \mid \mathbf{x})} \right)
+    \]
+    for the two binary classes, and is therefore known as the \emph{log-odds}.
+\end{mdframed}
 
 \subsubsection{Naive Bayes}
 
@@ -135,7 +156,6 @@ There are two approaches.
         \node[draw, circle, left=of x2] (x1) {$X_1$};
 
         \draw[->] (y) edge (x1) (y) edge (x2) (y) edge (x3);
-
     \end{tikzpicture}
 \end{figure}
 
@@ -155,6 +175,42 @@ defined with the parameters $\mathbf{\mu}_k$ (mean vectors) and $\Sigma_k$ (co-v
 
 A model with continues input and two output classes: $0$ and $1$.
 And yes this is classification and not regression (what).
+With a weight vector $\mathbf{w}$ and the sigmoid function, we say that
+\[
+    P(Y = 1 \mid \mathbf{X} = \mathbf{x}, \mathbf{w}) = \sigma(\mathbf{X} \cdot \mathbf{w})
+\]
+and
+\[
+    P(Y = 0 \mid \mathbf{X} = \mathbf{x}, \mathbf{w}) = 1 - P(Y = 1 \mid \mathbf{X} = \mathbf{x}, \mathbf{w})\,.
+\]
+Thus due to the shape of sigmoid, the dicision boundary is $\mathbf{w} \cdot \mathbf{x} \geq 0$.
+
+If $\mathbf{x}$ is of dimensions $M$, then we have $M$ fittable parameters.
+This is a contrast with the Gaussian Mixture Models.
+
+\emph{Categorical attributes} can be optained by using one hot encoding on the input vector.
+Therefore having a single values for each of the possible categories.
+Multiple outputs can also be optained by choosing a reference class, and then compare the rest according to this reference class with multiple models.
+
+When learning we try to maximize the likelyhood
+\[
+    \prod_{n:y_n=1} P(Y = 1 \mid \mathbf{X} = \mathbf{x}_n, \mathbf{w}) \cdot \prod_{n:y_n=0} (1 - P(Y = 1 \mid \mathbf{X} = \mathbf{x}_n, \mathbf{w}))\,,
+\]
+which is often done with numerical methods like Newton-Raphson.
+
+\begin{table}[h]
+    \caption{Comparison between different methods.}
+    \label{tab:lin:compare}
+    \begin{tabularx}{\linewidth}{XXXXX}
+        \toprule
+                  & Least Squares & Perceptron & LDA & Logistic Regression \\ \midrule
+        Criterion & Approximate one-hot class & Minimize error function & Maximize likelyhood & Maximize likelyhood \\
+        Multi-class & Yes & No (through extension) & Yes & No (through extension)  \\
+        Learning & Solving matrix equation & Iterative optimization & One step optimization & Iterative optimization \\
+        Finds seperating regions if possible & not always & yes & not always & not always \\
+        Works for non seperable data & yes & poorly & yes & yes \\ \bottomrule
+    \end{tabularx}
+\end{table}
 
 \subsection{Exam Notes}
 
@@ -164,12 +220,11 @@ The topics for the exam are as follows, the missing topics are noted in fat:
     \item Overfitting
     \item Least squares regression (corresponding to sklearn LinearRegression in self study 1)
     \item Linear discriminant analysis
-    \item \textbf{Logistic Regression}
+    \item Logistic Regression
 \end{itemize}
 
-\begin{mdframed}[nobreak,frametitle={Questions that Need Answering}]
+\begin{mdframed}[frametitle={Questions that Need Answering}]
     \begin{itemize}
-        \item What is the logistic regression.
         \item Løs opgaver for denne lektion.
     \end{itemize}
 \end{mdframed}
@@ -199,14 +254,12 @@ The topics for the exam are as follows, the missing topics are noted in fat:
 
 \section{Support Vector Machines}
 
-\subsection{Exam Notes}
+\subsection{Maximum Margin Hyperplanes}
 
-\begin{itemize}
-    \item Maximum margin hypeplanes
-    \item Feature transformations and kernel functions
-    \item The kernel trick
-    \item String kernels
-\end{itemize}
+\emph{Maximum-margin hyperplace} is a hyperplane with the maximum amount of margin to all points.
+Here distance to closest point in each class is the same, making it more likely that new cases are in the correct regions.
+We then now that each class has datapoints, whose distance to the hyperplane equals the margin, and these points are called \emph{support vectors}.
+
 
 \subsection{Feature Space}
 
@@ -219,4 +272,12 @@ This mapping can be usefull, to transform data such that it is linearly seperabl
 
 \subsection{Nonlinear SVM}
 
+\subsection{Exam Notes}
+
+\begin{itemize}
+    \item Maximum margin hypeplanes
+    \item Feature transformations and kernel functions
+    \item The kernel trick
+    \item String kernels
+\end{itemize}
 
