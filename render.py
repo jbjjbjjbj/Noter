@@ -10,6 +10,7 @@ import re
 tex_template = """\\documentclass[12pt]{article}
 \\usepackage{amsmath}
 \\usepackage{amsfonts}
+\\usepackage{amssymb}
 \\usepackage{mdframed}
 \\usepackage{float}
 \\usepackage{amsthm}
@@ -17,6 +18,7 @@ tex_template = """\\documentclass[12pt]{article}
 \\usepackage{siunitx}
 \\usepackage{enumitem}
 \\usepackage{tabularx}
+\\usepackage{hyperref}
 \\usepackage{cleveref}
 
 \\usepackage{tikz}

@@ -1,6 +1,10 @@
 \title{Exam Notes}
 \tableofcontents
 
+\begin{itemize}
+    \item \textbf{Lav Self study 5}
+\end{itemize}
+
 \section{Linear Models}
 
 This section explains a set of methods, which are all summarized in \cref{tab:lin:compare}.
@@ -199,8 +203,6 @@ When learning we try to maximize the likelyhood
 which is often done with numerical methods like Newton-Raphson.
 
 \begin{table}[h]
-    \caption{Comparison between different methods.}
-    \label{tab:lin:compare}
     \begin{tabularx}{\linewidth}{XXXXX}
         \toprule
                   & Least Squares & Perceptron & LDA & Logistic Regression \\ \midrule
@@ -210,6 +212,8 @@ which is often done with numerical methods like Newton-Raphson.
         Finds seperating regions if possible & not always & yes & not always & not always \\
         Works for non seperable data & yes & poorly & yes & yes \\ \bottomrule
     \end{tabularx}
+    \caption{Comparison between different methods.}
+    \label{tab:lin:compare}
 \end{table}
 
 \subsection{Exam Notes}
@@ -251,17 +255,44 @@ The topics for the exam are as follows, the missing topics are noted in fat:
         Linear also performs much better, due to it being able to use other features the linearly seperate classes.
 \end{enumerate}
 
+\subsubsection{Self Study 2}
+
+\begin{enumerate}
+    \item First we try to see how the decision regions are effected by the algorithm.
+        We see that GaussianNB does not do a very good job, and has multiple greens inside the red region.
+        And the SVC performs the best, by creating a nice hyperplane with lots of spacing on either side.
+    \item Then we try some overfitting with two gaussian distributions.
+        We use a gaussian model, which should yield pretty good results.
+        While SVC performs on par with gaussian on training, it performs much worse on the testing.
+    \item With the buston dataset we can make some obervations of the learned values.
+        Here we normalize the data first, therefore making it easier to compare across columns.
+        \begin{itemize}
+            \item For the LDA, we see that the means for each side are very close. This probably means that the differences in values of the classes is not very different.
+            \item We can see that \texttt{CRIM}(crime rate) has a rather large negative coeficient in both algorithms, meaning it pulls the data point towards $0$, thus below average.
+        \end{itemize}
+\end{enumerate}
 
 \section{Support Vector Machines}
 
-\subsection{Maximum Margin Hyperplanes}
+\subsection{Maximum Margin Hyperplanes and SVM}
 
 \emph{Maximum-margin hyperplace} is a hyperplane with the maximum amount of margin to all points.
 Here distance to closest point in each class is the same, making it more likely that new cases are in the correct regions.
 We then now that each class has datapoints, whose distance to the hyperplane equals the margin, and these points are called \emph{support vectors}.
 
+The goal of SVM is to find such such a hyperplane, which is done by finding
+\[
+    \underset{\mathbf{w}, b}{\mathrm{arg}\,\mathrm{min}}\,\frac 1 2 ||\mathbf{w}||^2
+\]
+with the constraint
+\[
+    y_n(\mathbf{w} \cdot \mathbf{x}_n + b) \geq 1 \quad (n = 1, \dots, N)\,.
+\]
+Here $b$ is the value we know as $w_0$.
+This problem is solved with lagrance multipliers, and identifies the support vectors that lie on the margin.
+Then $\mathbf{w}$ is a linear combination of support vectors.
 
-\subsection{Feature Space}
+\subsection{Nonlinear SVM}
 
 We can create a mapping, $\phi : \mathbb{R}^D \rightarrow \mathbb{R}^{D'}$, which transforms the original data:
 \[
@@ -270,14 +301,348 @@ We can create a mapping, $\phi : \mathbb{R}^D \rightarrow \mathbb{R}^{D'}$, whic
 Here the components $\phi_i$ are called \emph{features} or \emph{basis functions} and $\mathbb{R}^{D'}$ is the \emph{feature space} of $\phi$.
 This mapping can be usefull, to transform data such that it is linearly seperable.
 
-\subsection{Nonlinear SVM}
+However, for this mapping to be usefull, we would have to map to rather large dimensions, which in turn makes computations on $\phi$ expensive.
+Therefore we utilize that Lagrange optimization only does dot products, to do a \emph{kernel trick}:
+\[
+    \phi(\mathbf{x}) \cdot \phi(\mathbf{x'}) = (\mathbf{x} \cdot \mathbf{x'} + 1)^2\,.
+\]
+This gives us our first \emph{kernel function}: $K(\mathbf{x}, \mathbf{x'}) = (\mathbf{x} \cdot \mathbf{x'} + 1)^2$.
+We can interpret kernel functions as a function that measures the similarity between two vectors.
+
+\begin{mdframed}[frametitle=Mercer's Theorem]
+    Let $K(\mathbf{x}, \mathbf{z})$ be some symmetric function.
+    Then it is of form:
+    \[
+        K(\mathbf{x}, \mathbf{z}) = \phi(\mathbf{x}) \cdot \phi(\mathbf{z})
+    \]
+    if and only if for all finite sets of points, the kernel matrix is \emph{positive semi-definite}.
+\end{mdframed}
+
+This gives the following learning strategy:
+\begin{enumerate}
+    \item Given a classification problem.
+    \item Determine or select similarity function.
+        Slide 11 has some nice rules for constructing kernel functions from others.
+        If we have non numeric data we can create tables for kernel functions.
+    \item Check if \emph{positive semi-definite}.
+    \item Learn SVM using kernel function instead of dot product.
+\end{enumerate}
+
+\begin{table}[h]
+    \centering
+
+    \begin{tabular}{lll}
+        \toprule
+        Name & Sklearn name & Formula \\ \midrule
+        Polynomial kernel & \texttt{poly} & $(\mathbf{x} \cdot \mathbf{z} + 1)^p$ \\
+        Gaussian kernel  & \texttt{rbf} & $\exp\left(\frac {-||\mathbf{x} - \mathbf{z} ||} {2\sigma^2}\right)$ \\
+        Hyperbolic tangent & \texttt{sigmoid} & $\tanh(\kappa \cdot \mathbf{x} \cdot \mathbf{z} - \delta)$ \\ \bottomrule
+    \end{tabular}
+    \caption{Different kernel functions and their names in Sklearn.}
+\end{table}
+
+\subsection{String and Text Kernels}
+
+If we cant to categorize text, we need to turn it into vectors.
+Have a vector with a place for every word, and the amount of times it occurs in the text.
+Then we can check similarity by checking how orthogonal their vectors are, thus how they have words in common.
+Here one can use the \emph{Cosine similarity}, which is the normalized dot product.
+
+We may also want to categorize \emph{strings} of some alphabet $\Sigma$.
+Here we can create two kernel functions:
+\begin{description}
+    \item[$p$-spectrum kernel] Here we check how many $p$ length strings they have in common.
+        So \texttt{bar} and \texttt{bat} have two in common.
+    \item[All-subsequence kernel] Here we check how many strings of all lengths they have in common.
+        Remember to count the empty string also.
+        Thus \texttt{cat} and \texttt{bar} have two in common (\texttt{a} and $\epsilon$).
+\end{description}
 
 \subsection{Exam Notes}
 
 \begin{itemize}
-    \item Maximum margin hypeplanes
+    \item \textbf{Maximum margin hypeplanes}
     \item Feature transformations and kernel functions
-    \item The kernel trick
-    \item String kernels
+    \item \textbf{The kernel trick}
+    \item \textbf{String kernels}
+\end{itemize}
+
+
+\begin{mdframed}[frametitle={Questions that Need Answering}]
+    \begin{itemize}
+        \item Løs opgaver for lektion.
+        \item Hvad er positive semi-definite.
+    \end{itemize}
+\end{mdframed}
+
+\subsection{Self Study 3}
+
+\begin{itemize}
+    \item We import the father large dataset of images, which we can see contains drawn numbers.
+    \item We then train 3 models with different \emph{kernel functions} (what are those).
+        Looking at the times they took to train, we see that sigmoid does take alot longer, which makes a bit sense due to the use of $\tanh$.
+\end{itemize}
+
+\section{Graph Data: Community Detection}
+
+A community in a graph is a group of nodes with greater ties internally than to the rest of the network.
+When finding these communities we can look at it in different ways:
+\begin{itemize}
+    \item Identifying single communities.
+    \item Partitioning into disjoint communities, thus \emph{graph clustering}.
+    \item Deviding into overlapping communities.
+    \item Assigning graded communities, thus one can be part of multiple but to different degrees.
+\end{itemize}
+
+\paragraph{Graph Clustering}
+Split a graph $G = (V, E)$ into partitioning $\mathcal{C} = \{C_1, \dots, C_k\}$ of $V$.
+Here one needs to find a fitting measure, and a algorithm to determine a clustering.
+
+\subsection{Newman Girvan Algorithm}
+
+Works by repeatedly removing the edge with the largest \emph{edge betweenness} and then checking whether removing this edge creates disconnected sections.
+Thereby we create a hierarchy of clusterings for each iteration.
+The edge betweenness score, $\beta(e)$, is calculated by counting the number of shortest paths that cross an edge:
+\[
+    \beta(e) = \sum_{u,v \in V} \frac {\text{Number of shortest paths connecting $u, v$ through e}} {\text{Number of shortest paths connecting $u, v$}}\,.
+\]
+The total complexity of the algorithm is $O(m^2 n)$, with calculation of $\beta$ for all edges taking $O(mn)$, with $m$ being the number of iterations and $n$ the number of nodes.
+
+A score for a clustering is also proposed, called \emph{modularity}.
+With $k$ communities, we calculate we calculate the score by:
+\[
+    Q(C_1, \dots, C_k) = \sum_{i=1}^k (e_i - a_i^2)\,,
+\]
+where $e_i$ is the proportion of edges that connect nodes inside cluster $C_i$, and $a_i$ is the proportion of edge endpoints that belong to cluster $C_i$.
+We use the modularity to determine when we have found a good clustering, and should stop the algorithm.
+
+\subsection{Mixture Models}
+
+Remember to gaussian mixture models from above, well why not use that here.
+We model the problem as a bunch of unknown distributions $P_i$, generating the points with some unknown coeficients $\lambda_i$, as follows:
+\[
+    P(\mathbf{x}) = \sum_{i=1}^k \lambda_i P_i(\mathbf{x}) \quad \left(\sum_{i=1}^k \lambda_i = 1\right)\,.
+\]
+Now when learning we maximize the likelyhood
+\[
+    \prod_{j=1}^N P(\mathbf{x}_j)\,,
+\]
+and cluster instances as
+\[
+    \underset{i \in 1,\dots, k}{\text{arg max }} P_i(\mathbf{x})\,.
+\]
+\emph{Expectation maximization} can also be used to fit $n$ number of gaussians to datapoints.
+
+However how do we use this on graphs, because this works very much on datapoints.
+Well now comes be bad part, positioning nodes.
+
+\subsection{Graph Mixture Models}
+
+First we generate a random graph, by sampling coordinates for nodes from a Gaussian Mixture model:
+\[
+    z_i \sim \sum_{j=1}^k \lambda_j N(\mathbf{\mu}_j, \Sigma_j)\,.
+\]
+Then assign edges according to a logistic regression, based on their Euclidean distance:
+\[
+    P(E_{i,j} = 1 \mid \mathbf{z}_i, \mathbf{z}_j) = \frac {e^{\alpha - \beta || \mathbf{z}_i - \mathbf{z}_j ||}} {1 + e^{\alpha - \beta || \mathbf{z}_i - \mathbf{z}_j ||}}\,.
+\]
+
+Now with a graph and number of wanted clusters we want to estimate $\lambda_j, \mathbf{\mu}_j, \Sigma_j, \alpha, \beta$ and coordinates $\mathbf{z}_1, \dots, \mathbf{z}_n$.
+This is done by first estimating $\alpha, \beta$ and distances $|| \mathbf{z}_i - \mathbf{z}_j||$, in the following log-likelyhood:
+\[
+    \sum_{i,j:E_{i,j}=1} \alpha - \beta || \mathbf{z}_i - \mathbf{z}_j|| - \log\left(1 + e^{\alpha - \beta || \mathbf{z}_i - \mathbf{z}_j||}\right)
+    + \sum_{i,j:E_{i,j}=0} -\log\left(1 + e^{\alpha - \beta || \mathbf{z}_i - \mathbf{z}_j||}\right)\,.
+\]
+Then we can estimate the absolute positions of $\mathbf{z}$ with \emph{multidimensional scaling}.
+
+We then estimate the mixture model given the coordinates $\mathbf{z}_i, \dots, \mathbf{z}_n$, by maximizing the log-likelyhood,
+\[
+    \sum_{i=1}^n \log \sum_{j=1}^k \lambda_j N(\mathbf{\mu}_j, \Sigma_j)(\mathbf{z}_i)
+\]
+
+\subsection{Exam Notes}
+
+\begin{mdframed}[frametitle={Questions that Need Answering}]
+    \begin{itemize}
+        \item Is $n$ the number of iterations?
+        \item In exercises, what do we set $\beta$ and $\alpha$.
+    \end{itemize}
+\end{mdframed}
+
+\begin{itemize}
+    \item What are communities
+    \item Newman Girvan algorithm
+    \item Modularity
+    \item Node clustering with probabilistic mixture model
+\end{itemize}
+
+
+\subsubsection{Self Study 4}
+
+\begin{itemize}
+    \item Load undirected dataset with layers, with edges based on friendship.
+    \item We can calculate the \emph{modularity} score based on a partitioning by office and status.
+        After trying both, status seems to give the best modulation score.
+    \item We can try to compare these together with the modulation score, however this yields some very large partitions.
+        With our own wierd score we get the same but a bit better.
+        This may be due to the many different parameters splitting groups, so very small groups is better.
+    \item Embedding and how this can make it easy to identify groups by their position in space.
+        We try different likelyhood parameters, and each gives a different result.
+    \item We then use \emph{LDA (mixture model with same covarience matrix}.
+    \item When doing the DIY embedding we can actaully get very nice results with 4 dimensions.
+\end{itemize}
+
+\section{Graph Data: Node Classification}
+
+Here the goal is classify nodes, from both their position in the network but also with added attributes for each node.
+These attributes, together with a incomplete set of labels is added to the graph model: $G = ((V_l, V_u), E, \mathbf{A}, Y)$.
+Here $V_u$ are the unlabeled nodes, and $V_l$ are the labeled (labeled by $Y$).
+Our goal is now to predict the labels for the unlabeled nodes $V_u$.
+This can be done in two main approaches:
+\begin{description}
+    \item[Transductive] The graph $G$ is fixed, thus all unlabeled nodes that should be predicted are known when learning.
+    \item[Inductive] One network is used for learning the classifier, and classification is done on added nodes not known when learning.
+        Classification can also be done on a completely different graph.
+\end{description}
+
+\paragraph{Homophily} The idea that a link between induviduals is corrolated with them being similar.
+Such as friends often sharing attributes such as school, age, etc.
+
+\subsection{Independent Classification}
+A simple solution is to use standard machine learning techniques, and encode \emph{node features} as a vector $\mathbf{X_i}$.
+Then generate training data from the nodes $V_l$, and use prediction to get values for unlabeled edges.
+When constructing a vector from nodes, we can chose different features:
+\begin{itemize}
+    \item A node attribute.
+    \item In/out edge degree.
+    \item An aggregation over attributes from linked nodes (such as an average).
+    \item Boolean function for neighbourhood: ``at most 2 friendships away is somefrom whoose age is 10''.
+\end{itemize}
+
+\subsection{Label Propagation}
+
+Transductive classification, utilizing the idea of homophily.
+Iteratively propagate label values to neighbours, starting with the initial labels.
+Through this iteration we mentain a propability distribution for each label for each node.
+
+Then assuming the algorithm converges, we get the most propable label according to the distribution after an infinite number of iterations.
+
+\subsection{Markov Networks}
+
+A undirected graph where nodes are random variables $X_1, \dots, X_n$, and a set of \emph{clique potentials}
+\[
+    \phi_i : Val(\mathbf{Y}_i) \rightarrow \mathbb{R}^+ \quad (i = 1, \dots, k)
+\]
+where $\mathbf{Y}_i \subseteq \mathbf{X}$ is a fully connected subgraph of the graph.
+
+Then the Markov network defined the joint probability for $\mathbf{X}$ as,
+\[
+    P_\mathcal{N} (\mathbf{X} = \mathbf{x}) = \frac 1 Z \prod_{i=1}^k \phi_i(\mathbf{x} \upharpoonright \mathbf{Y}_i)
+\]
+where
+\begin{equation}
+    \label{eq:stupid_z}
+    Z = \sum_{\mathbf{x} \in Val(\mathbf{X})} \prod_{i=1}^k \phi_i (\mathbf{x} \upharpoonright \mathbf{Y}_i)
+\end{equation}
+and $\mathbf{x} \upharpoonright \mathbf{Y}_i$ is the vector $\mathbf{x}$ but only with the values that are in $\mathbf{Y}_i$.
+
+\paragraph{Inference}
+Given $\mathbf{Z} \subset \mathbf{X}$, $X \in \mathbf{X}$, and instantiation $\mathbf{z}$, we want to compute $P_\mathcal{N}(X | \mathbf{Z} = \mathbf{z})$.
+There is a way to solve this, but it requires computation of $Z$ in \cref{eq:stupid_z} which is kind of hard.
+Instead we can use Gibbs sampling.
+
+\subsection{Gibbs Sampling}
+
+We want to compute the marginal probability $P_\mathcal{N}(X = x)$, which we approximate with a sequence of samples $\mathbf{X}_1, \dots, \mathbf{X}_N$.
+Then we count the times $X = x$ in the $N$ samples, to find the probability.
+
+Each iteration we randomly change the value of one node, according to the probability $P(X_k \mid \mathbf{X}_{\setminus k}= \mathbf{x}_{\setminus k}^{t-1})$.
+This probability does not require calculating \cref{eq:stupid_z}, and can therefore fairly easily be done.
+A number of burnin samples is done, to make sure that the network is random when starting.
+
+Problem with this method is figuring out the sizes of $t$ (burnin size) and $N$.
+And because the dependency of states, the accuracy of the estimation is diffucult to determine.
+
+\subsection{Markov Networks for Classification}
+
+Given a set of nodes $V= \{v_1, \dots, v_n\}$ and a set of attributes $\mathbf{A} = A_1, \dots, A_m$, we want to generate a probabilistic model for graphs with these nodes and attributes.
+This gives us the random variables: $E(i, j)$ representing the exitence of an edge from node $i$ to $j$, and $A_j(i)$ representing the value of attribute $A_j$ for node $i$.
+We also define some \emph{potential functions} such as the \emph{Homophily potential}:
+\[
+    \phi(E(i,j), A(i), A(j)) = \left\{
+        \begin{array}{ll}
+            e^w & \text{if $E(i,j) = 1$ and $A(i)= A(j)$} \\
+            e^{-w} & \text{if $E(i,j)= 1$ and $A(i) \neq A(j)$} \\
+            1 & \text{if $E(i,j) = 0$}
+        \end{array}
+        \right.\,.
+\]
+
+We then condition on the known edges and attributes, and can then use Gibbs sampling.
+The values of $w_0$ and $w_1$ would have to be learned using some training network.
+
+\subsection{Exam Notes}
+
+\begin{itemize}
+    \item Inductive and transductive classification
+    \item Homophily
+    \item Independent classification
+    \item Label propagation
+    \item Node classification with Markov networks
+\end{itemize}
+
+\section{Neural Networks: Basics}
+
+A basic builting unit, combining inputs as a \emph{weighed sum} and passing this to an \emph{activation function}.
+Some activation function can be found in \cref{tab:act}.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{ll}
+        \toprule
+        Name & Formula \\ \midrule
+        Sigmoid & $a(x)= \frac 1 {(1 + e^{-x})}$ \\
+        Hyperbolic tangent & $a(x)= \tanh(x)$ \\
+        Relu & $a(x) = \max(0, x)$ \\
+        Identity & $a(x) = x$ \\ \bottomrule
+    \end{tabular}
+    \caption{Examples of activation functions.}
+    \label{tab:act}
+\end{table}
+
+These simple units or \emph{neurons} are then but in layers, which we put on top of each other.
+
+\subsection{Learning}
+
+Given the neural network structure, training examples and a \emph{loss function}, the goal is to find weighs, $\mathbf{w}$, that minimize
+\[
+    \frac 1 N \sum_{i=1}^N loss(\mathbf{t}_i, \mathbf{o}_i(\mathbf{w}))\,.
+\]
+Here $loss(\mathbf{t}, \mathbf{o})$ is the loss function over targets $\mathbf{t}$ and output values $\mathbf{o}$.
+Different loss functions can be found in \cref{tab:loss}.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{llX}
+        \toprule
+        Name & Formula \\ \midrule
+        Squared error & $\sum_{i=1}^m(t_i - o_i)^2$ \\
+        Log-loss & $-\log p(\mathbf{t}\mid \mathbf{x})$ \\
+        Cross-entropy & $-\sum_{i=1}^m t_i \cdot \log o_i$ \\
+        \bottomrule
+    \end{tabular}
+    \caption{Examples of loss/error functions.}
+    \label{tab:loss}
+\end{table}
+
+\subsubsection{Gradient Descent}
+
+\subsection{Exam Notes}
+
+\begin{itemize}
+    \item Neural network basics
+    \item Loss functions
+    \item Learning neural networks (gradient decent and stochadtic gradient descent)
+    \item Neural network structures
 \end{itemize}
 
